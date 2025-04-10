@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block titulo %}
+
+    <title>Programação Web 2025</title>
+
+    {% endblock titulo %}
+    <link rel="stylesheet" href="{% static 'css\estilo.css' %}">
+</head>
+<body>
+
+    <h4>Menu superior</h4>
+
+    <ul>
+        <li>
+            <a href="{% url "sobre" %}"> sobre</a>
+        </li>
+        <li>
+            <a href="{% url "Inicio" %}"> Início </a>
+        </li>
+    </ul>
+
+    {%  block conteudo  %}
+    <h3>Estou com fomeeee</h3>
+
+  
+    
+    <p>O Richard tá me devendo um doce</p>
+    <br>
+    <p>Meu aniversário foi Ontem </p>
+    <p>Agora eu já tenho duas décadas de existência</p>
+
+    {% endblock conteudo %}
+
+    <p>Desenvolvido por um CLT sem direitos e um escravo nos dias atuais</p>
+
+</body>
+</html>
