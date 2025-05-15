@@ -7,9 +7,7 @@ class Usuario(models.Model):
     data_nasc = models.DateField
     email = models.EmailField
     nickname = models.CharField(max_length=100)
-    id = models.CharField(max_length=16)
-    conversa = models.ForeignKey(Conve)
-    
+    id = models.CharField(max_length=16) 
     
 
 class Universo(models.Model):
@@ -19,10 +17,11 @@ class Universo(models.Model):
 class Personagem(models.Model):
     nome = models.TextField(100)
     habilidades = models.TextField(1000)
-    caracteristicas = models.TextField(1000, verbose_name="Características)
+    caracteristicas = models.TextField(1000, verbose_name="Características")
     origem = models.TextField(1500)
-    user = models.ForeignKey(PerfilUsuario, on_delete= Protect)
+    user = models.ForeignKey(User, on_delete= models.PROTECT)
     
 class Conversa(models.Model):
-    usuarios = models.ForeignKey(Usuario, on_delete=Protect)
-    u 
+    usuarios = models.ForeignKey(User, on_delete= models.PROTECT)
+    universo = models.ForeignKey(Universo, on_delete= models.)
+    
