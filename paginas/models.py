@@ -23,5 +23,5 @@ class Personagem(models.Model):
     
 class Conversa(models.Model):
     usuarios = models.ForeignKey(User, on_delete= models.PROTECT)
-    universo = models.ForeignKey(Universo, on_delete= models.)
-    
+    universo = models.ForeignKey(Universo, on_delete= models.PROTECT)
+        
