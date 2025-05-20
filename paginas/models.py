@@ -18,10 +18,21 @@ class Personagem(models.Model):
     nome = models.TextField(100)
     habilidades = models.TextField(1000)
     caracteristicas = models.TextField(1000, verbose_name="Características")
-    origem = models.TextField(1500)
+    historia = models.TextField(1500)
     user = models.ForeignKey(User, on_delete= models.PROTECT)
     
 class Conversa(models.Model):
     usuarios = models.ForeignKey(User, on_delete= models.PROTECT)
     universo = models.ForeignKey(Universo, on_delete= models.PROTECT)
+
+
+class Mensagem(models.Model):
+    enviada_por = models.ForeignKey(Personagem, on_delete = models.PROTECT)
+    enviada_em = models.DateTimeField
+    origem = models.ForeignKey(Conversa, on_delete=models.CASCADE)
+    conteudo = models.TextField(1500)
+
+class Combate(models.Model):
+    conversa = models.ForeignKey(Conversa, on_delete = models.CASCADE)
+    mensagem = models.ForeignKey(Mensagem, on_delete=models.CASCADE)
         
