@@ -67,3 +67,10 @@ class MensagemCreate(CreateView):
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('Inicio')
     extra_context = {}
+
+class CombateCreate(CreateView):
+    model = Combate
+    fields = ['conversa', 'mensagem']
+    template_name = 'paginas/form.html'
+    success_url = reverse_lazy('Inicio')
+    extra_context = {}
