@@ -41,7 +41,7 @@ class ConversaCreate(CreateView):
 
 class MensagemCreate(CreateView):
     model = Mensagem
-    fields = ['enviada_por', 'enviada_em', 'conteudo']
+    fields = ['enviada_por', 'enviada_em', 'conteudo', 'conversa_origem']
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('Inicio')
     extra_context = {}
@@ -84,15 +84,37 @@ class ConversaUpdate(UpdateView):
     
 class MensagemUpdate(UpdateView):
     model = Mensagem
+    fields = ['enviada_por', 'enviada_em', 'conteudo', 'conversa_origem']
+    template_name = 'paginas/form.html'
+    success_url = reverse_lazy('Inicio')
+    extra_context = {}
+
+
+class UsuarioDelete(DeleteView):
+    model = Usuario
+    template_name = 'paginas/form.html'
+    success_url = reverse_lazy('Inicio')
+    extra_context = {}
+
+class PersonagemDelete(DeleteView):
+    model = Personagem
+    template_name = 'paginas/form.html'
+    success_url = reverse_lazy('Inicio')
+    extra_context = {}
+
+
+class ConversaDelete(DeleteView):
+    model = Conversa
+    template_name = 'paginas/form.html'
+    success_url = reverse_lazy('Inicio')
+    extra_context = {}
+
+
+class MensagemDelete(DeleteView):
+    model = Mensagem
     fields = ['enviada_por', 'enviada_em', 'conteudo']
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('Inicio')
     extra_context = {}
-    
-class CombateUpdate(UpdateView):
-    model = Combate
-    fields = ['conversa', 'mensagem']
-    template_name = 'paginas/form.html'
-    success_url = reverse_lazy('Inicio')
-    extra_context = {}
+ 
 

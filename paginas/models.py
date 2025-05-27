@@ -41,7 +41,7 @@ class Conversa(models.Model):
 class Mensagem(models.Model):
     enviada_por = models.ForeignKey(Personagem, on_delete = models.PROTECT)
     enviada_em = models.DateTimeField(auto_now_add=True)
-    #origem = models.ForeignKey(Conversa, on_delete=models.CASCADE)
+    conversa_origem = models.ForeignKey(Conversa, on_delete=models.CASCADE)
     conteudo = models.TextField(1500)
 
     def __str__(self):
