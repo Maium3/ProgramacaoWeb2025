@@ -20,7 +20,7 @@ class UsuarioCreate(CreateView):
      
 class UniversoCreate(CreateView):
     model = Universo 
-    fields = ['nome','descricao']
+    fields = ['nome','descricao', 'data_criacao', 'ultima_atualizacao']
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('Inicio')
     extra_context = {}
@@ -41,7 +41,7 @@ class ConversaCreate(CreateView):
 
 class MensagemCreate(CreateView):
     model = Mensagem
-    fields = ['enviada_por', 'enviada_em', 'origem', 'conteudo']
+    fields = ['enviada_por', 'enviada_em', 'conteudo']
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('Inicio')
     extra_context = {}
@@ -62,7 +62,7 @@ class UsuarioUpdate(UpdateView):
     
 class UniversoUpdate(UpdateView):
     model = Universo 
-    fields = ['nome','descricao']
+    fields = ['nome','descricao', 'data_criacao', 'ultima_atualizacao']
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('Inicio')
     extra_context = {}
@@ -84,7 +84,7 @@ class ConversaUpdate(UpdateView):
     
 class MensagemUpdate(UpdateView):
     model = Mensagem
-    fields = ['enviada_por', 'enviada_em', 'origem', 'conteudo']
+    fields = ['enviada_por', 'enviada_em', 'conteudo']
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('Inicio')
     extra_context = {}
