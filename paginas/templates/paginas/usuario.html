@@ -1,0 +1,32 @@
+{% extends "paginas/index.html" %}
+{% load static %}
+
+{% block conteudo %} 
+<h3>lista de Usúarios</h3>
+
+<table>
+    <tr>
+        <th>ID</th>
+        <th>nickname</th>
+        <th>Opções</th>
+    </tr>
+    {% for user in  object_list%}
+    
+    <tr>
+        <td>{{ user.codigo_id}}</td>
+        <td>{{ user.nickame}}</td>
+        <td>
+            <a href="#">Editar</a>
+            <a href="#">Excluir</a>
+        </td>
+    </tr>
+
+    {% else %}
+    <tr>
+        <td colspan="3">Nenhum usúario encontrado</td>
+    </tr>
+    
+    {% endfor %}
+</table>
+
+{% endblock conteudo %}

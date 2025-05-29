@@ -1,8 +1,10 @@
-from django.views.generic.edit import *
+from django.views.generic import TemplateView, ListView
 from django.views.generic.edit import  CreateView, UpdateView, DeleteView
 from .models import Usuario, Universo, Personagem, Conversa, Mensagem, Combate
 
 from django.urls import reverse_lazy
+
+
 
 class Inicio(TemplateView):
     template_name = "paginas/index.html"
@@ -13,7 +15,7 @@ class SobreView(TemplateView):
   
 class UsuarioCreate(CreateView):
     model = Usuario
-    fields = ['nome', 'data_nasc', 'email', 'nickname', 'id']
+    fields = ['usuario','nome', 'data_nasc', 'email', 'nickname', 'codigo_id']
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('Inicio')
     extra_context = {}
@@ -55,7 +57,7 @@ class CombateCreate(CreateView):
 
 class UsuarioUpdate(UpdateView):
     model = Usuario
-    fields = ['nome', 'data_nasc', 'email', 'nickname', 'id']
+    fields = ['nome', 'data_nasc', 'email', 'nickname', 'codigo_id']
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('Inicio')
     extra_context = {}
@@ -112,9 +114,12 @@ class ConversaDelete(DeleteView):
 
 class MensagemDelete(DeleteView):
     model = Mensagem
-    fields = ['enviada_por', 'enviada_em', 'conteudo']
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('Inicio')
     extra_context = {}
  
 
+class UsuarioList(ListView):
+    model= Usuario
+    template_name = "paginas/usuario.html"
+    

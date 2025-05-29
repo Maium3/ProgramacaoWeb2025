@@ -1,9 +1,12 @@
 
 from django.contrib import admin
 from django.urls import path
-from .views import Inicio, SobreView, UsuarioCreate, UniversoCreate, PersonagemCreate, ConversaCreate, MensagemCreate, CombateCreate, UsuarioUpdate, UniversoUpdate, PersonagemUpdate, ConversaUpdate, MensagemUpdate, PersonagemDelete, ConversaDelete, MensagemDelete, CombateDelete
-
+from .views import Inicio, SobreView, UsuarioCreate, UniversoCreate, PersonagemCreate, ConversaCreate, MensagemCreate, CombateCreate, UsuarioUpdate, UniversoUpdate, PersonagemUpdate, ConversaUpdate, UsuarioDelete, MensagemUpdate, PersonagemDelete, ConversaDelete, MensagemDelete
+from .views import UsuarioList
 urlpatterns = [
+
+    path("listar/usuario", Usuario)
+
     path("", Inicio.as_view(), name= "Inicio"),
     path('sobre-o-site/', SobreView.as_view(), name = "sobre"),
     path('cadastro-usuario/', UsuarioCreate.as_view(), name="cadastro_usuario"),
@@ -22,7 +25,6 @@ urlpatterns = [
     path('deletar-usuario/', UsuarioDelete.as_view(), name="deletar_usuario"),
     path('deletar-personagem/', PersonagemDelete.as_view(), name="deletar_personagem"),
     path('excluir-conversa/', ConversaDelete.as_view(), name="excluir_conversa"),
-    path('excluir-mensagem/', MensagemUpdate.as_view(), name="excluir_mensagem"),
-    path('apagar-combate/', CombateDelete.as_view(), name="apagar_combate")
+    path('excluir-mensagem/', MensagemDelete.as_view(), name="excluir_mensagem"),
     
 ]
