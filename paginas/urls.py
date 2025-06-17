@@ -2,7 +2,7 @@
 from django.contrib import admin
 from django.urls import path
 from .views import Inicio, SobreView, UsuarioCreate, UniversoCreate, PersonagemCreate, ConversaCreate, MensagemCreate, CombateCreate, UsuarioUpdate, UniversoUpdate, PersonagemUpdate, ConversaUpdate, UsuarioDelete, MensagemUpdate, PersonagemDelete, ConversaDelete, MensagemDelete
-from .views import UsuarioList
+from .views import UsuarioList, UniversoList, PersonagemList, ConversaList, CombateList
 urlpatterns = [
 
     path("listar/usuario", Usuario)
@@ -26,5 +26,11 @@ urlpatterns = [
     path('deletar-personagem/', PersonagemDelete.as_view(), name="deletar_personagem"),
     path('excluir-conversa/', ConversaDelete.as_view(), name="excluir_conversa"),
     path('excluir-mensagem/', MensagemDelete.as_view(), name="excluir_mensagem"),
+
+    path('listar-usuarios/' UsuarioList.as_view(), name="listar_usuarios"),
+    path('listar-Universos/' UniversoList.as_view(), name="listar_Universos"),
+    path('listar-personagens/' PersonagemList.as_view(), name="listar_personagens"),
+    path('listar-conversa/' ConversaList.as_view(), name="listar_conversas"),
+    path('listar-combates/' CombateList.as_view(), name="listar_Combates"),
     
 ]
