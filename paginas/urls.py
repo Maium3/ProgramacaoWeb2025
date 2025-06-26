@@ -3,9 +3,33 @@ from django.contrib import admin
 from django.urls import path
 from .views import Inicio, SobreView, UsuarioCreate, UniversoCreate, PersonagemCreate, ConversaCreate, MensagemCreate, CombateCreate, UsuarioUpdate, UniversoUpdate, PersonagemUpdate, ConversaUpdate, UsuarioDelete, MensagemUpdate, PersonagemDelete, ConversaDelete, MensagemDelete
 from .views import UsuarioList, UniversoList, PersonagemList, ConversaList, CombateList
+from django.contrib.auth import views as auth_views
 urlpatterns = [
 
-    path("listar/usuario", Usuario)
+
+    path('login/', auth_views.LoginView.as_view(
+         template_name = 'paginas/form.html',
+          extra_context = {
+        'titulo': 'Login',
+        'botao': 'login'   
+    },
+    ), name="Login"),
+
+     path('alterar-senha/', auth_views.PasswordChangeView.as_view(
+         template_name = 'paginas/form.html',
+          extra_context = {
+        'titulo': 'Atualizar senha',
+        'botao': 'salvar'   
+    },
+    ), name="alterar senha"),
+        
+    path('sair/', auth_views.LogoutView.as_view(
+         template_name = 'paginas/form.html',
+          extra_context = {
+        'titulo': 'Desconectar',
+        'botao': 'Desconectar'   
+    }
+    ), name="Desconectar"),
 
     path("", Inicio.as_view(), name= "Inicio"),
     path('sobre-o-site/', SobreView.as_view(), name = "sobre"),
@@ -27,10 +51,10 @@ urlpatterns = [
     path('excluir-conversa/', ConversaDelete.as_view(), name="excluir_conversa"),
     path('excluir-mensagem/', MensagemDelete.as_view(), name="excluir_mensagem"),
 
-    path('listar-usuarios/' UsuarioList.as_view(), name="listar_usuarios"),
-    path('listar-Universos/' UniversoList.as_view(), name="listar_Universos"),
-    path('listar-personagens/' PersonagemList.as_view(), name="listar_personagens"),
-    path('listar-conversa/' ConversaList.as_view(), name="listar_conversas"),
-    path('listar-combates/' CombateList.as_view(), name="listar_Combates"),
+    path('listar-usuarios/', UsuarioList.as_view(), name="listar_usuarios"),
+    path('listar-Universos/', UniversoList.as_view(), name="listar_Universos"),
+    path('listar-personagens/', PersonagemList.as_view(), name="listar_personagens"),
+    path('listar-conversa/', ConversaList.as_view(), name="listar_conversas"),
+    path('listar-combates/', CombateList.as_view(), name="listar_Combates"),
     
 ]

@@ -15,7 +15,7 @@
 
     <h4>Menu superior</h4>
 
-    <ul>
+    <ul id="menu">
         <li>
             <a href="{% url "sobre" %}"> sobre</a>
         </li>
@@ -23,6 +23,30 @@
             <a href="{% url "Inicio" %}"> Início </a>
         </li>
     </ul>
+
+
+    {% if request.user.is_authenticated %}
+        <ul id="">
+    <!-- seus links aqui -->
+            <li><a href="{% url "listar_usuarios" %}">Usuários</a></li>
+            <li><a href="{% url "listar_Universos" %}">Universos</a></li>
+            <li><a href="{% url "listar_personagens" %}">Personagens</a></li>
+            <li><a href="{% url "listar_conversas" %}">Conversas</a></li>
+            <li><a href="{% url "listar_Combates" %}">Combates</a></li>
+
+    
+            <li><a href="{% url "Desconectar" %}">Sair</a></li>
+            <li><a href="{% url "alterar senha" %}">Mudar senha</a></li>
+        </ul>
+    {% else %}
+        <ul>
+            <li><a href="{% url "Login" %}">Entrar</a> </li>
+        </ul>
+    {% endif %}
+
+
+
+
 
     {%  block conteudo  %}
     <h2>Arena Multiversal</h2>

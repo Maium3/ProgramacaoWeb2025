@@ -3,6 +3,7 @@ from django.views.generic.edit import  CreateView, UpdateView, DeleteView
 from .models import Usuario, Universo, Personagem, Conversa, Mensagem, Combate
 
 from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 
@@ -18,14 +19,20 @@ class UsuarioCreate(CreateView):
     fields = ['usuario','nome', 'data_nasc', 'email', 'nickname', 'codigo_id']
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('Inicio')
-    extra_context = {}
+    extra_context = {
+        'titulo': 'Cadastrar Novo Usuário',
+        'botao': 'Cadastrar'   
+    }
      
-class UniversoCreate(CreateView):
+class UniversoCreate(LoginRequiredMixin, CreateView):
     model = Universo 
-    fields = ['nome','descricao', 'data_criacao', 'ultima_atualizacao']
+    fields = ['nome','descricao']
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('Inicio')
-    extra_context = {}
+    extra_context = {
+        'titulo': 'Cadastrar Novo Usuário',
+        'botao': 'Cadastrar'   
+    }
     
 class PersonagemCreate(CreateView):
     model = Personagem 
@@ -64,7 +71,7 @@ class UsuarioUpdate(UpdateView):
     
 class UniversoUpdate(UpdateView):
     model = Universo 
-    fields = ['nome','descricao', 'data_criacao', 'ultima_atualizacao']
+    fields = ['nome','descricao']
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('Inicio')
     extra_context = {}
@@ -122,4 +129,23 @@ class MensagemDelete(DeleteView):
 class UsuarioList(ListView):
     model= Usuario
     template_name = "paginas/usuario.html"
-    
+
+
+class UniversoList(ListView):
+    model= Universo
+    template_name = "paginas/universo.html"
+
+
+class PersonagemList(ListView):
+    model= Personagem
+    template_name = "paginas/pesonagem.html"
+
+
+class ConversaList(ListView):
+    model= Conversa
+    template_name = "paginas/conversa.html" 
+
+
+class CombateList(ListView):
+    model= Combate
+    template_name = "paginas/usuario.html"   
