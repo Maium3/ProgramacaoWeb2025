@@ -2,6 +2,7 @@ from django.views.generic import TemplateView, ListView
 from django.views.generic.edit import  CreateView, UpdateView, DeleteView
 from .models import Usuario, Universo, Personagem, Conversa, Mensagem, Combate
 
+
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -34,56 +35,56 @@ class UniversoCreate(LoginRequiredMixin, CreateView):
         'botao': 'Cadastrar'   
     }
     
-class PersonagemCreate(CreateView):
+class PersonagemCreate(LoginRequiredMixin, CreateView):
     model = Personagem 
     fields = ['nome', 'habilidades', 'caracteristicas', 'historia', 'user']
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('Inicio')
     extra_context = {}
     
-class ConversaCreate(CreateView):
+class ConversaCreate(LoginRequiredMixin, CreateView):
     model = Conversa
     fields = ['usuarios', 'universo']
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('Inicio')
     extra_context = {}
 
-class MensagemCreate(CreateView):
+class MensagemCreate(LoginRequiredMixin, CreateView):
     model = Mensagem
     fields = ['enviada_por', 'enviada_em', 'conteudo', 'conversa_origem']
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('Inicio')
     extra_context = {}
 
-class CombateCreate(CreateView):
+class CombateCreate(LoginRequiredMixin, CreateView):
     model = Combate
     fields = ['conversa', 'mensagem']
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('Inicio')
     extra_context = {}
 
-class UsuarioUpdate(UpdateView):
+class UsuarioUpdate(LoginRequiredMixin, UpdateView):
     model = Usuario
     fields = ['nome', 'data_nasc', 'email', 'nickname', 'codigo_id']
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('Inicio')
     extra_context = {}
     
-class UniversoUpdate(UpdateView):
+class UniversoUpdate(LoginRequiredMixin, UpdateView):
     model = Universo 
     fields = ['nome','descricao']
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('Inicio')
     extra_context = {}
     
-class PersonagemUpdate(UpdateView):
+class PersonagemUpdate(LoginRequiredMixin, UpdateView):
     model = Personagem 
     fields = ['nome', 'habilidades', 'caracteristicas', 'historia', 'user']
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('Inicio')
     extra_context = {}
 
-class ConversaUpdate(UpdateView):
+class ConversaUpdate(LoginRequiredMixin, UpdateView):
     model = Conversa
     fields = ['usuarios', 'universo']
     template_name = 'paginas/form.html'
@@ -91,7 +92,7 @@ class ConversaUpdate(UpdateView):
     extra_context = {}
 
     
-class MensagemUpdate(UpdateView):
+class MensagemUpdate(LoginRequiredMixin, UpdateView):
     model = Mensagem
     fields = ['enviada_por', 'enviada_em', 'conteudo', 'conversa_origem']
     template_name = 'paginas/form.html'
@@ -99,34 +100,34 @@ class MensagemUpdate(UpdateView):
     extra_context = {}
 
 
-class UsuarioDelete(DeleteView):
+class UsuarioDelete(LoginRequiredMixin, DeleteView):
     model = Usuario
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('Inicio')
     extra_context = {}
 
-class PersonagemDelete(DeleteView):
+class PersonagemDelete(LoginRequiredMixin, DeleteView):
     model = Personagem
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('Inicio')
     extra_context = {}
 
 
-class ConversaDelete(DeleteView):
+class ConversaDelete(LoginRequiredMixin, DeleteView):
     model = Conversa
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('Inicio')
     extra_context = {}
 
 
-class MensagemDelete(DeleteView):
+class MensagemDelete(LoginRequiredMixin, DeleteView):
     model = Mensagem
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('Inicio')
     extra_context = {}
  
 
-class UsuarioList(ListView):
+class UsuarioList(LoginRequiredMixin, ListView):
     model= Usuario
     template_name = "paginas/usuario.html"
 
@@ -141,7 +142,7 @@ class PersonagemList(ListView):
     template_name = "paginas/pesonagem.html"
 
 
-class ConversaList(ListView):
+class ConversaList(LoginRequiredMixin, ListView):
     model= Conversa
     template_name = "paginas/conversa.html" 
 
