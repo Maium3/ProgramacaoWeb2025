@@ -5,6 +5,8 @@ from .models import Usuario, Universo, Personagem, Conversa, Mensagem, Combate
 
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
+
 
 
 
@@ -15,31 +17,34 @@ class SobreView(TemplateView):
     template_name = 'paginas/sobre.html'
     
   
-class UsuarioCreate(CreateView):
+class UsuarioCreate(SuccessMessageMixin, CreateView):
     model = Usuario
     fields = ['usuario','nome', 'data_nasc', 'email', 'nickname', 'codigo_id']
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('Inicio')
+    success_message = "Usuário criado com sucesso"
     extra_context = {
         'titulo': 'Cadastrar Novo Usuário',
         'botao': 'Cadastrar'   
     }
      
-class UniversoCreate(LoginRequiredMixin, CreateView):
+class UniversoCreate(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     model = Universo 
     fields = ['nome','descricao']
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('Inicio')
+    success_message = "Universo criado com sucesso"
     extra_context = {
         'titulo': 'Cadastrar Novo Usuário',
         'botao': 'Cadastrar'   
     }
     
-class PersonagemCreate(LoginRequiredMixin, CreateView):
+class PersonagemCreate(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     model = Personagem 
     fields = ['nome', 'habilidades', 'caracteristicas', 'historia', 'user']
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('Inicio')
+    success_message = "Personagem criado com sucesso"
     extra_context = {}
     
 class ConversaCreate(LoginRequiredMixin, CreateView):
@@ -63,25 +68,30 @@ class CombateCreate(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('Inicio')
     extra_context = {}
 
-class UsuarioUpdate(LoginRequiredMixin, UpdateView):
+class UsuarioUpdate(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     model = Usuario
     fields = ['nome', 'data_nasc', 'email', 'nickname', 'codigo_id']
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('Inicio')
+    success_message = "Usuário foi atualizado com sucesso"
     extra_context = {}
     
-class UniversoUpdate(LoginRequiredMixin, UpdateView):
+class UniversoUpdate(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     model = Universo 
     fields = ['nome','descricao']
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('Inicio')
+    success_message = "Universo foi atualizado com sucesso"
     extra_context = {}
     
-class PersonagemUpdate(LoginRequiredMixin, UpdateView):
+
+class PersonagemUpdate(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     model = Personagem 
     fields = ['nome', 'habilidades', 'caracteristicas', 'historia', 'user']
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('Inicio')
+    
+    success_message = "O Personagem %(nome)% foi atualizado com sucesso"
     extra_context = {}
 
 class ConversaUpdate(LoginRequiredMixin, UpdateView):
@@ -100,30 +110,34 @@ class MensagemUpdate(LoginRequiredMixin, UpdateView):
     extra_context = {}
 
 
-class UsuarioDelete(LoginRequiredMixin, DeleteView):
+class UsuarioDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     model = Usuario
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('Inicio')
+    success_message = "Usuário foi deletado com sucesso"
     extra_context = {}
 
-class PersonagemDelete(LoginRequiredMixin, DeleteView):
+class PersonagemDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     model = Personagem
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('Inicio')
+    success_message = "O Personagem %(nome)% foi deletado com sucesso"
     extra_context = {}
 
 
-class ConversaDelete(LoginRequiredMixin, DeleteView):
+class ConversaDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     model = Conversa
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('Inicio')
+    success_message = "Conversa deletada com sucesso"
     extra_context = {}
 
 
-class MensagemDelete(LoginRequiredMixin, DeleteView):
+class MensagemDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     model = Mensagem
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('Inicio')
+    success_message = "Mensagem deletada com sucesso"
     extra_context = {}
  
 
