@@ -19,7 +19,7 @@ class SobreView(TemplateView):
   
 class UsuarioCreate(SuccessMessageMixin, CreateView):
     model = Usuario
-    fields = ['usuario','nome', 'data_nasc', 'email', 'nickname', 'codigo_id']
+    fields = ['nome', 'data_nasc']
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('Inicio')
     success_message = "Usuário criado com sucesso"
@@ -70,7 +70,7 @@ class CombateCreate(LoginRequiredMixin, CreateView):
 
 class UsuarioUpdate(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     model = Usuario
-    fields = ['nome', 'data_nasc', 'email', 'nickname', 'codigo_id']
+    fields = ['nome', 'data_nasc', 'nickname']
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('Inicio')
     success_message = "Usuário foi atualizado com sucesso"

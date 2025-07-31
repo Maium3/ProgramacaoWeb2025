@@ -2,12 +2,10 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Usuario(models.Model):
-    usuario = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name="Usuário")
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name="Usuário", related_name="Usuario")
     nome = models.CharField(max_length=100)
     data_nasc = models.DateField(verbose_name="data de nascimento")
-    email = models.EmailField(max_length=150)
-    nickname = models.CharField(max_length=100)
-    codigo_id = models.CharField(max_length=16, verbose_name="ID") 
+    codigo_id = models.CharField(max_length=16, verbose_name="ID", unique=True) 
 
     def __str__(self):
         return self.usuario, self.nome, self.data_nasc, self.email, self.nickname, self.id
@@ -27,6 +25,7 @@ class Personagem(models.Model):
     caracteristicas = models.TextField( verbose_name="Características", null=True) 
     historia = models.TextField( null=True)
     user = models.ForeignKey(User, on_delete= models.PROTECT)
+    #universo = models.ForeignKey()
 
     def __str__(self):
         return  self.nome, self.habilidades, self.caracteristicas, self.historia, self.user.nickname, self.user.id
