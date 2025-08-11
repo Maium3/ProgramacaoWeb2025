@@ -1,0 +1,37 @@
+{% extends "paginas/index.html" %}
+{% load static %}
+
+{% block conteudo %} 
+<h3>lista de Usúarios</h3>
+
+<table>
+    <tr>
+        <th>Nome</th>
+        <th>descrição</th>
+        <th>Ultima atualização</th>
+        <th>Criado em </th>
+        <th>Opções</th>
+    </tr>
+    
+    {% for universo in  object_list %}
+    
+    <tr>
+        <td>{{ universo.nome}}</td>
+        <td>{{ universo.descricao}}</td>
+        <td>{{ universo.ultima_atualizacao}}</td>
+        <td>{{ universo.data_criacao}}</td>
+        <td>
+            <a href="{% url "atualizar_universo" universo.pk %}">Editar</a>
+            <a href="#">Excluir</a>
+        </td>
+    </tr>
+
+    {% empty %}
+    <tr>
+        <td colspan="3">Nenhum usúario encontrado</td>
+    </tr>
+    
+    {% endfor %}
+</table>
+
+{% endblock conteudo %}

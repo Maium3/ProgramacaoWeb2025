@@ -1,0 +1,37 @@
+{% extends "paginas/index.html" %}
+{% load static %}
+
+{% block conteudo %} 
+<h3>lista de Personagens</h3>
+
+
+ <table>
+    <tr>
+            <th>Nome</th>
+            <th>História</th>
+            <th>User</th>
+            <th>User</th>
+    
+        </tr>
+    
+    {% for user in  object_list %}
+    
+    <tr>
+        <td>{{ personagem.nome}}</td>
+        <td>{{ personagem.historia}}</td>
+        <td>{{ personagem.user}}</td>
+        <td>
+            <a href="{% url "alterar_personagem" personagem.pk %}">Editar</a>
+            <a href="{% url "deletar_personagem" personagem.pk %}">Excluir</a>
+        </td>
+    </tr>
+
+    {% empty %}
+    <tr>
+        <td colspan="3">Nenhum personagem encontrado</td>
+    </tr>
+    
+    {% endfor %}
+</table>
+
+{% endblock conteudo %}

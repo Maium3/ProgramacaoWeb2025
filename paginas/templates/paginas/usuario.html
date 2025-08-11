@@ -10,18 +10,19 @@
         <th>nickname</th>
         <th>Opções</th>
     </tr>
-    {% for user in  object_list%}
+    
+    {% for user in  object_list %}
     
     <tr>
         <td>{{ user.codigo_id}}</td>
-        <td>{{ user.nickame}}</td>
+        <td>{{ user.usuario.username}}</td>
         <td>
-            <a href="#">Editar</a>
-            <a href="#">Excluir</a>
+            <a href="{% url "atualizar_usuario" user.pk %}">Editar</a>
+            <a href="{% url "deletar_usuario" user.pk %}">Excluir</a>
         </td>
     </tr>
 
-    {% else %}
+    {% empty %}
     <tr>
         <td colspan="3">Nenhum usúario encontrado</td>
     </tr>

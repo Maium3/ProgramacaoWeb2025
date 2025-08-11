@@ -53,3 +53,6 @@ class Combate(models.Model):
     def __str__(self):
         return  self.conversa, self.mensagem
         
+class Favoritos(models.Model):
+    proprietario = models.ForeignKey(User, on_delete= models.CASCADE, related_name="proprietario")
+    amigo = models.ForeignKey(User, on_delete= models.CASCADE, related_name="amigo")
