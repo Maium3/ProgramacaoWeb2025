@@ -52,14 +52,22 @@ class ConversaCreate(LoginRequiredMixin, CreateView):
     fields = ['usuarios', 'universo']
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('Inicio')
-    extra_context = {}
+    extra_context = {
+        'titulo': "iniciar nova conversa",
+        'botao': "Iniciar"
+
+    }
 
 class MensagemCreate(LoginRequiredMixin, CreateView):
     model = Mensagem
     fields = ['enviada_por', 'enviada_em', 'conteudo', 'conversa_origem']
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('Inicio')
-    extra_context = {}
+    extra_context = {
+        'titulo': "Enviar mensagem",
+        'botao': "Enviar"
+
+    }
 
 class CombateCreate(LoginRequiredMixin, CreateView):
     model = Combate

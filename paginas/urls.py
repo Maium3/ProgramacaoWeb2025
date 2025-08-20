@@ -1,8 +1,11 @@
 
 from django.contrib import admin
 from django.urls import path
-from .views import Inicio, SobreView, UsuarioCreate, UniversoCreate, PersonagemCreate, ConversaCreate, MensagemCreate, CombateCreate, UsuarioUpdate, UniversoUpdate, PersonagemUpdate, ConversaUpdate, UsuarioDelete, MensagemUpdate, PersonagemDelete, ConversaDelete, MensagemDelete
-from .views import UsuarioList, UniversoList, PersonagemList, ConversaList, CombateList
+from .views import Inicio, SobreView
+from .views import UsuarioCreate, UniversoCreate, PersonagemCreate, ConversaCreate, MensagemCreate, CombateCreate, FavoritoCreate
+from .views import UsuarioUpdate, UniversoUpdate, PersonagemUpdate, ConversaUpdate, UsuarioDelete, MensagemUpdate
+from .views import PersonagemDelete, ConversaDelete, MensagemDelete, FavoritoDelete
+from .views import UsuarioList, UniversoList, PersonagemList, ConversaList, CombateList, FavoritoList
 from django.contrib.auth import views as auth_views
 urlpatterns = [
 
@@ -39,6 +42,7 @@ urlpatterns = [
     path('iniciar-conversa/', ConversaCreate.as_view(), name="iniciar_conversa"),
     path('enviar-mensagem/', MensagemCreate.as_view(), name="enviar_mensagem"),
     path('iniciar-combate/', CombateCreate.as_view(), name="iniciar_novo_combate"),
+    path('Adcionar-favorito/', FavoritoCreate.as_view(), name="adcionar_aos_contatos"),
     
     path('atualizar-usuario/<int:pk>/', UsuarioUpdate.as_view(), name="atualizar_usuario"),
     path('atualizar-universo/<int:pk>/', UniversoUpdate.as_view(), name="atualizar_universo"),
@@ -50,11 +54,13 @@ urlpatterns = [
     path('deletar-personagem/<int:pk>/', PersonagemDelete.as_view(), name="deletar_personagem"),
     path('excluir-conversa/<int:pk>/', ConversaDelete.as_view(), name="excluir_conversa"),
     path('excluir-mensagem/<int:pk>/', MensagemDelete.as_view(), name="excluir_mensagem"),
+    path('Excluir-contato/', FavoritoDelete.as_view(), name="Desvaforitar"),
 
     path('listar-usuarios/', UsuarioList.as_view(), name="listar_usuarios"),
     path('listar-Universos/', UniversoList.as_view(), name="listar_Universos"),
     path('listar-personagens/', PersonagemList.as_view(), name="listar_personagens"),
     path('listar-conversa/', ConversaList.as_view(), name="listar_conversas"),
     path('listar-combates/', CombateList.as_view(), name="listar_Combates"),
+    path('lista-favoritos/', FavoritoList.as_view(), name="listar_contatos"),
     
 ]

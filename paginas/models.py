@@ -33,9 +33,10 @@ class Personagem(models.Model):
 class Conversa(models.Model):
     usuarios = models.ForeignKey(User, on_delete= models.PROTECT)
     universo = models.ForeignKey(Universo, on_delete= models.PROTECT)
+    
 
     def __str__(self):
-        return  self.usuarios.nickname, self.universo.nome
+        return  self.usuarios.nickname, self.universo.nome, self.mensagens.conteudo
 
 class Mensagem(models.Model):
     enviada_por = models.ForeignKey(Personagem, on_delete = models.PROTECT)
