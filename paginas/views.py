@@ -15,7 +15,7 @@ class CadastroUsuarioView(CreateView):
     # Não tem o fields, pois ele é definido no forms.py
     form_class = UsuarioCadastroForm
     # Pode utilizar o seu form padrão
-    template_name = 'cadastros/form.html'
+    template_name = 'paginas/form.html'
     success_url = reverse_lazy('login')
     extra_context = {
         'titulo': 'Registro de usuários',
