@@ -50,6 +50,8 @@ class Mensagem(models.Model):
 class Combate(models.Model):
     conversa = models.ForeignKey(Conversa, on_delete = models.CASCADE)
     mensagem = models.ForeignKey(Mensagem, on_delete=models.CASCADE)
+    ganhador = models.ForeignKey(Personagem, on_delete=models.CASCADE, related_name='ganhador')
+    perdedor = models.ForeignKey(Personagem, on_delete=models.CASCADE, related_name='perdedor')
 
     def __str__(self):
         return  self.conversa, self.mensagem

@@ -3,10 +3,13 @@ from django.contrib import admin
 from django.urls import path
 from .views import Inicio, SobreView
 from .views import UsuarioCreate, UniversoCreate, PersonagemCreate, ConversaCreate, MensagemCreate, CombateCreate, FavoritoCreate
-from .views import UsuarioUpdate, UniversoUpdate, PersonagemUpdate, ConversaUpdate, UsuarioDelete, MensagemUpdate
-from .views import PersonagemDelete, ConversaDelete, MensagemDelete, FavoritoDelete
-from .views import UsuarioList, UniversoList, PersonagemList, ConversaList, CombateList, FavoritoList
+from .views import UsuarioUpdate, UniversoUpdate, PersonagemUpdate, ConversaUpdate, MensagemUpdate
+from .views import UsuarioDelete, PersonagemDelete, ConversaDelete, MensagemDelete, FavoritoDelete
+from .views import UsuarioList, UniversoList, PersonagemList, ConversaList, MensagemList, CombateList, FavoritoList
 from django.contrib.auth import views as auth_views
+from .views import CadastroUsuarioView
+
+
 urlpatterns = [
 
 
@@ -34,6 +37,8 @@ urlpatterns = [
     }
     ), name="Desconectar"),
 
+    path("registrar/", CadastroUsuarioView.as_view(), name="registrar"),
+
     path("", Inicio.as_view(), name= "Inicio"),
     path('sobre-o-site/', SobreView.as_view(), name = "sobre"),
     path('cadastro-usuario/', UsuarioCreate.as_view(), name="cadastro_usuario"),
@@ -60,6 +65,7 @@ urlpatterns = [
     path('listar-Universos/', UniversoList.as_view(), name="listar_Universos"),
     path('listar-personagens/', PersonagemList.as_view(), name="listar_personagens"),
     path('listar-conversa/', ConversaList.as_view(), name="listar_conversas"),
+    path('listar-mensagens/', MensagemList.as_view(), name="listar_mensagens"),
     path('listar-combates/', CombateList.as_view(), name="listar_Combates"),
     path('lista-favoritos/', FavoritoList.as_view(), name="listar_contatos"),
     
