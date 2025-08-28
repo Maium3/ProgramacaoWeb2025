@@ -8,6 +8,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.models import User, Group
 from .forms import UsuarioCadastroForm
+from django .shortcuts import get_object_or_404
+from django.utils import timezone
 
 
 # Crie a view no final do arquivo ou em outro local que faça sentido
@@ -16,7 +18,8 @@ class CadastroUsuarioView(CreateView):
     form_class = UsuarioCadastroForm
     # Pode utilizar o seu form padrão
     template_name = 'paginas/form.html'
-    success_url = reverse_lazy('login')
+    success_url = reverse_lazy('listar_usuarios')
+    success_message = "Usuário %(username)s cadastrado com sucesso"
     extra_context = {
         'titulo': 'Registro de usuários',
         'botao': 'Registrar',
@@ -24,16 +27,30 @@ class CadastroUsuarioView(CreateView):
 
 
     def form_valid(self, form):
+        # pegar nome e data_nasc do form
+        nome = form.cleaned_data.get('nome')
+        data_nasc = form.cleaned_data.get('data_nasc')
+
         # Faz o comportamento padrão do form_valid
         url = super().form_valid(form)
         # Busca ou cria um grupo com esse nome
-        grupo, criado = Group.objects.get_or_create(name='Estudante')
+        grupo, criado = Group.objects.get_or_create(name='Usuários Comuns')
         # Acessa o objeto criado e adiciona o usuário no grupo acima
         self.object.groups.add(grupo)
+
+        # Gera um código_id será o primeiro nome sem espaço em minúsculo + # + id do usário sempre formatado com pelo menos 4 dígitos
+        codigo_id = f"{nome.split()[0].lower()}#{self.object.id:04d}"
+        # Exemplo: João Silva -> joão#0001
+
+        # Cria o objeto Usuario com os dados adicionais
+        Usuario.objects.create(
+            usuario=self.object,
+            nome=nome,
+            data_nasc=data_nasc,
+            codigo_id=codigo_id  # Exemplo simples de código ID
+        )
         # Retorna a URL de sucesso
         return url
-
-
 
 
 
@@ -157,6 +174,12 @@ class UsuarioUpdate(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
         'titulo': 'Atualuzar meus dados',
         'botao': 'Confirmar'   
     }
+
+    #alterar o metodo que busca o objeto pelo id(get_object)
+    def get_object(self, queryset=None):
+        return get_object_or_404(Usuario, pk=self.kwargs['pk'], )
+    
+    
     
 class UniversoUpdate(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     model = Universo 
@@ -273,6 +296,11 @@ class PersonagemList(ListView):
     model= Personagem
     template_name = "paginas/pesonagem.html"
 
+class MeusPersonagens(PersonagemList):
+    def get_queryset(self):
+        qs = Personagem.objects.filter(user=self.request.user)
+        return qs
+
 
 class ConversaList(LoginRequiredMixin, ListView):
     model= Conversa
@@ -290,3 +318,4 @@ class CombateList(ListView):
 class FavoritoList(ListView):
     model= Favoritos
     template_name= "paginas/favoritos.html"
+

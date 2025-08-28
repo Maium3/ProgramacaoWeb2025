@@ -1,8 +1,12 @@
 {% extends "paginas/index.html" %}
 
 
+
+
 {% load static %}
 
+<!--importar o cryspy forms-->
+{% load cryspy_form form_tags %}
 {% block conteudo %}
 
 <h4>{{titulo}}</h4>
@@ -10,10 +14,27 @@
 <form method="POST">
     {% csrf_token %}
 
+
     {{ form.as_p }}
+
+    
+    <!--onde devo criar um botão de editar e outro de excluir?-->
+    <!--o botão de editar e excluir deve ser criado na página de detalhes do usuário, não aqui no formulário-->
+    <!--esse formulário é usado para criar e editar usuários, então só precisamos de um botão de submit-->
+    <!--o texto do botão é dinâmico, dependendo se estamos criando ou editando um usuário-->
+    <!--se estivermos criando um usuário, o texto do botão será "Salvar"-->
+    <!--esse é um formulario base para os outros formularios, por que não posso criar esses botões aqui?-->
+    <!--porque o botão de editar e excluir só faz sentido na página de detalhes do usuário-->
+    <!--e essa página de detalhes do usuário não usa esse formulário, ela tem seu próprio template-->
+    <!--então, para manter a simplicidade e a reutilização do código, não colocamos esses botões aqui-->
+    <!--se eu quiser colocar esses botões aqui, como eu faço?-->  
+    
 
     <button type="submit" class="btn btn-success">
         {{botao}}
     </button>
+
+
+
 </form>
 {% endblock conteudo %}

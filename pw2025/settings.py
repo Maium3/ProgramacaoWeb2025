@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 
+#comentar em todas as linhas o que elas fazem
+# e adicionar as novas linhas necessárias para o cryspy forms
+# e para o banco de dados postgresql na supabase (essas linhas estão no final do arquivo)
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -31,6 +35,12 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
+    #adicionar o cryspy forms e o cryspy bootstrap5
+    'cryspy_forms',
+    'cryspy_bootstrap5',
+    #o que essas linhas fazem?
+    # Elas ativam os aplicativos padrão do Django e o aplicativo 'paginas' que criamos
+    # para que possamos usá-los em nosso projeto.
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -40,6 +50,15 @@ INSTALLED_APPS = [
     "paginas.apps.PaginasConfig",
 ]
 
+#configurar o cryspy com o bootstrap5
+CRYSPY_FORMS_TEMPLATE_PACK = 'bootstrap5'
+cryspy_tamplate_pack = 'bootstrap5'
+
+# Middleware é uma série de componentes que processam requisições e respostas
+# Eles são executados em ordem, e cada um pode modificar a requisição ou resposta
+# ou até mesmo interromper o processamento
+#por exemplo, o SecurityMiddleware adiciona cabeçalhos de segurança às respostas
+#e o AuthenticationMiddleware associa usuários autenticados às requisições
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -49,9 +68,15 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
-
+# Define a URL raiz do projeto
 ROOT_URLCONF = "pw2025.urls"
-
+# Configurações de template para renderizar HTML
+# Define o backend de template, diretórios de templates, e processadores de contexto
+#como?
+# Os processadores de contexto adicionam variáveis úteis ao contexto de todos os templates
+#só?
+# Por exemplo, o processador 'auth' adiciona o objeto 'user' ao contexto
+# para que possamos verificar se o usuário está autenticado em nossos templates
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
