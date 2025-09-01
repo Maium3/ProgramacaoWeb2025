@@ -284,17 +284,17 @@ class FavoritoDelete(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
 
 class UsuarioList(LoginRequiredMixin, ListView):
     model= Usuario
-    template_name = "paginas/usuario.html"
+    template_name = "paginas/listas/usuario.html"
 
 
 class UniversoList(ListView):
     model= Universo
-    template_name = "paginas/universo.html"
+    template_name = "paginas/listas/universo.html"
 
 
 class PersonagemList(ListView):
     model= Personagem
-    template_name = "paginas/pesonagem.html"
+    template_name = "paginas/listas/personagem.html"
 
 class MeusPersonagens(PersonagemList):
     def get_queryset(self):
@@ -304,18 +304,18 @@ class MeusPersonagens(PersonagemList):
 
 class ConversaList(LoginRequiredMixin, ListView):
     model= Conversa
-    template_name = "paginas/conversa.html" 
+    template_name = "paginas/listas/conversa.html" 
 
 class MensagemList(LoginRequiredMixin, ListView):
     model= Mensagem
-    template_name = "paginas/mensagem.html"
+    template_name = "paginas/listas/mensagem.html"
 
 
 class CombateList(ListView):
     model= Combate
-    template_name = "paginas/usuario.html" 
+    template_name = "paginas/listas/usuario.html" 
 
 class FavoritoList(ListView):
     model= Favoritos
-    template_name= "paginas/favoritos.html"
+    template_name= "paginas/listas/favoritos.html"
 

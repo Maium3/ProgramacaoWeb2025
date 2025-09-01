@@ -4,74 +4,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     {% block titulo %}
-
     <title>PVP: The Multiversal Arena</title>
-
     {% endblock titulo %}
-    <link rel="stylesheet" href="{% static 'css\estilo.css' %}">
 
+    <!-- Estilo personalizado -->
+    <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" 
-    integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <!-- Bootstrap CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+
+    <!-- Estilo inline para gradiente do título -->
+    <style>
+        .gradient-title {
+            background: linear-gradient(to bottom, #59079c, #d094f2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: bold;
+        }
+
+        body {
+            background-color: #121212; /* De acordo com a imagem escura fornecida */
+            color: white;
+        }
+
+        #menu a {
+            color: #ffffff;
+            text-decoration: none;
+            margin-right: 15px;
+          }
+          
+        ul{
+          color: #ffffff;
+
+        }
+
+        #menu a:hover {
+            text-decoration: underline;
+        }
+
+        ul#menu {
+            list-style: none;
+            padding-left: 0;
+        }
+    </style>
 </head>
-<body>
-
-    <h4>Menu superior</h4>
-
-    <ul id="menu">
-        <li>
-            <a href="{% url "sobre" %}"> sobre</a>
-        </li>
-        <li>
-            <a href="{% url "Inicio" %}"> Início </a>
-        </li>
-    </ul>
-
-
-    {% if request.user.is_authenticated %}
-        <ul id="">
-    <!-- seus links aqui -->
-            <li><a href="{% url "listar_usuarios" %}">Usuários</a></li>
-            <li><a href="{% url "listar_Universos" %}">Universos</a></li>
-            <li><a href="{% url "listar_personagens" %}">Personagens</a></li>
-            <li><a href="{% url "listar_conversas" %}">Conversas</a></li>
-            <li><a href="{% url "listar_Combates" %}">Combates</a></li>
+<body class="container-fluid">
 
     
-            <li><a href="{% url "Desconectar" %}">Sair</a></li>
-            <li><a href="{% url "alterar senha" %}">Mudar senha</a></li>
-        </ul>
-    {% else %}
-        <ul>
-            <li><a href="{% url "Login" %}">Entrar</a> </li>
-        </ul>
-    {% endif %}
+
+    <!-- Título com gradiente -->
+    <h1 class="text-center gradient-title mb-4">Multiversal Arena</h1>
+
+    <!-- Logo -->
+     <!--copilot está online?-->
+     
+    <div class="text-center mb-4">
+        <img src="{% static 'imagens/logo.png' %}" alt="Logo" class="img-fluid" style="max-height: 150px;">
+    </div>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+        <div class="container justify-content-center">
+          <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+            <ul class="navbar-nav text-center">
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'sobre' %}">Sobre</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'Inicio' %}">Início</a>
+              </li>
+              {% if request.user.is_authenticated %}
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'listar_usuarios' %}">Usuários</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'listar_Universos' %}">Universos</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'listar_personagens' %}">Personagens</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'listar_conversas' %}">Conversas</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'listar_Combates' %}">Combates</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'alterar senha' %}">Mudar Senha</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'Desconectar' %}">Sair</a>
+                </li>
+              {% else %}
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'Login' %}">Entrar</a>
+                </li>
+              {% endif %}
+            </ul>
+          </div>
+        </div>
+      </nav>
+      
 
 
 
-    {% if messages %}
-        <ul>
-            {% for message in messages %}
-                <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
 
-    {%  block conteudo  %}
-    <h2>Arena Multiversal</h2>
+    <!-- Bloco de conteúdo dinâmico -->
+     <div class="container">
+      <div class="row justify-content-center text-center">
 
-  
-    
-    <p>Bem vindo a página principal</p>
-    <br>
-    {% endblock conteudo %}
+        <div class="col-lg-8">
+          {% block conteudo %}
+          <div class="text-center">
+            <h2>Bem-vindo à página principal</h2>
+            <p>Explore as batalhas no multiverso!</p>
+          </div>
+          {% endblock conteudo %}
+        </div>
+      </div>
+    </div>
 
-    <p>Desenvolvido por um CLT sem direitos e um escravo nos dias atuais</p>
+    <!-- Rodapé -->
+    <footer class="text-center mt-5">
+        <p class="small">Desenvolvido por um CLT sem direitos e um escravo nos dias atuais</p>
+    </footer>
 
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" 
-    integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
-
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
+            crossorigin="anonymous"></script>
 </body>
 </html>

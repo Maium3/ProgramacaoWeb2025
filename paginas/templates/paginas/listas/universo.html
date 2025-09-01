@@ -4,7 +4,7 @@
 {% block conteudo %} 
 <h3>lista de Usúarios</h3>
 
-<table>
+<table class="table table-striped table-hover">
     <tr>
         <th>Nome</th>
         <th>descrição</th>
@@ -21,8 +21,8 @@
         <td>{{ universo.ultima_atualizacao}}</td>
         <td>{{ universo.data_criacao}}</td>
         <td>
-            <a href="{% url "atualizar_universo" universo.pk %}">Editar</a>
-            <a href="#">Excluir</a>
+            <a class="btn btn-sm btn-dark" href="{% url "atualizar_universo" universo.pk %}">Editar</a>
+            <a class="btn btn-sm btn-danger" href="#">Excluir</a>
         </td>
     </tr>
 

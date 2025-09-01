@@ -35,9 +35,6 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
-    #adicionar o cryspy forms e o cryspy bootstrap5
-    'cryspy_forms',
-    'cryspy_bootstrap5',
     #o que essas linhas fazem?
     # Elas ativam os aplicativos padrão do Django e o aplicativo 'paginas' que criamos
     # para que possamos usá-los em nosso projeto.
@@ -48,11 +45,14 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "paginas.apps.PaginasConfig",
+    #adicionar o cryspy forms e o cryspy bootstrap5
+    'crispy_forms',
+    'crispy_bootstrap5',
 ]
 
 #configurar o cryspy com o bootstrap5
-CRYSPY_FORMS_TEMPLATE_PACK = 'bootstrap5'
-cryspy_tamplate_pack = 'bootstrap5'
+CRISPY_ALLOWED_TEMPLATE_PACK = 'bootstrap5'
+CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
 # Middleware é uma série de componentes que processam requisições e respostas
 # Eles são executados em ordem, e cada um pode modificar a requisição ou resposta
