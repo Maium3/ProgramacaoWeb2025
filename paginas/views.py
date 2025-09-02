@@ -175,9 +175,9 @@ class UsuarioUpdate(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
         'botao': 'Confirmar'   
     }
 
-    #alterar o metodo que busca o objeto pelo id(get_object)
+    #alterar o metodo que busca o objeto pelo id(get_object) para que só o proprio usuario possa alterar seus dados
     def get_object(self, queryset=None):
-        return get_object_or_404(Usuario, pk=self.kwargs['pk'], )
+        return get_object_or_404(Usuario, pk=self.kwargs['pk'], usuario=self.request.user)
     
     
     
@@ -238,6 +238,9 @@ class UsuarioDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
         'botao': 'Deletar'
     }
 
+    def get_object(self, queryset=None):
+        return get_object_or_404(Usuario, pk=self.kwargs['pk'], usuario=self.request.user)
+
 class PersonagemDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     model = Personagem
     template_name = 'paginas/form.html'
@@ -285,6 +288,9 @@ class FavoritoDelete(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
 class UsuarioList(LoginRequiredMixin, ListView):
     model= Usuario
     template_name = "paginas/listas/usuario.html"
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(Usuario, pk=self.kwargs['pk'], usuario=self.request.user)
 
 
 class UniversoList(ListView):

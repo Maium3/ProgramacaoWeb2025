@@ -4,8 +4,10 @@
 {% block conteudo %} 
 <h3>lista de Personagens</h3>
 
+<!--botão para criar um favorito, com a classe btn-primary outline(botão "vazio" com a cor em volta do botão) -->
+<a class="btn btn-sm btn-primary outline" href="{% url "adcionar_aos_contatos" %}">Adcionar contato</a>
 
- <table>
+ <table class="table table-striped table-hover">
     <tr>
             <th>Usuário</th>
             <th>Contato</th>
@@ -19,7 +21,7 @@
         <td>{{ favorito.proprietario}}</td>
         <td>{{ favorito.amigo}}</td>
         <td>
-            <a href="{% url "Excluir_contato" favorito.pk %}">Excluir</a>
+            <a class="btn btn-sm btn-danger" href="{% url "Excluir_contato" favorito.pk %}">Excluir</a>
         </td>
     </tr>
 
