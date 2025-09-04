@@ -5,7 +5,7 @@
 <h3>lista de Personagens</h3>
 
 <!--botão para criar um personagem, com a classe btn-primary outline(botão "vazio" com a cor em volta do botão) -->
-<a class="btn btn-sm btn-primary outline " href="{% url "criar_personagem"%}">Novo Personagem</a>
+<a class="btn btn-sm btn-outline-primary" href="{% url "criar_personagem"%}">Novo Personagem</a>
 <!--por que esse erro:"Reverse for 'criar_personagem' with arguments '('',)' not found. 1 pattern(s) tried: ['criar\\-personagem/\\Z']" está sendo encontrrado? como corrigir-->
 <!--resposta: está dando esse erro porque está tentando passar um argumento vazio (''), ou seja, não está passando nenhum valor para o parâmetro personagem.pk. Isso geralmente acontece quando a variável personagem não está definida ou não tem um valor atribuído no contexto do template. Para corrigir isso, você deve garantir que a variável personagem esteja definida e tenha um valor válido antes de usá-la na tag url. Se você está tentando criar um novo personagem, provavelmente não precisa passar nenhum argumento, então você pode simplesmente usar {% url "criar_personagem" %} sem o personagem.pk.-->
 

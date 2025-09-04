@@ -166,7 +166,7 @@ class FavoritoCreate(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 
 class UsuarioUpdate(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     model = Usuario
-    fields = ['nome', 'data_nasc']
+    fields = ['nome', 'data_nasc', 'username', 'email']
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('Inicio')
     success_message = "Usuário foi atualizado com sucesso"
@@ -191,6 +191,10 @@ class UniversoUpdate(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
         'titulo': 'Atualizar Universo',
         'botao': 'Salvar'   
     }
+
+    #alterar o metodo que busca o objeto pelo id(get_object) para que só o proprio usuario possa alterar seus dados
+    def get_object(self, queryset=None):
+        return get_object_or_404(Universo, pk=self.kwargs['pk'], usuario=self.request.user)
     
 
 class PersonagemUpdate(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
@@ -205,6 +209,9 @@ class PersonagemUpdate(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
         'botao': 'Alterar'
     }
 
+    def get_object(self, queryset=None):
+        return get_object_or_404(Personagem, pk=self.kwargs['pk'], user=self.request.user)
+
 class ConversaUpdate(LoginRequiredMixin, UpdateView):
     model = Conversa
     fields = ['usuarios', 'universo']
@@ -214,6 +221,9 @@ class ConversaUpdate(LoginRequiredMixin, UpdateView):
         'titulo': "Modificar conversa",
         'botao': "Modificar"
     }
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(Conversa, pk=self.kwargs['pk'], usuarios=self.request.user)
 
     
 class MensagemUpdate(LoginRequiredMixin, UpdateView):
@@ -227,6 +237,9 @@ class MensagemUpdate(LoginRequiredMixin, UpdateView):
         'botao': "Carregar"
     }
 
+    def get_object(self, queryset=None):
+        return get_object_or_404(Mensagem, pk=self.kwargs['pk'], enviada_por__user=self.request.user)
+
 
 class UsuarioDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     model = Usuario
@@ -238,8 +251,10 @@ class UsuarioDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
         'botao': 'Deletar'
     }
 
+    #alterar o metodo que busca o objeto pelo id(get_object) para que só o proprio usuario possa apagar seus dados
     def get_object(self, queryset=None):
         return get_object_or_404(Usuario, pk=self.kwargs['pk'], usuario=self.request.user)
+
 
 class PersonagemDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     model = Personagem
@@ -250,6 +265,9 @@ class PersonagemDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
         'titulo': 'Deletar Personagem',
         'botao': 'Deletar'
     }
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(Personagem, pk=self.kwargs['pk'], user=self.request.user)
 
 
 class ConversaDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
@@ -262,6 +280,9 @@ class ConversaDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
         'botao': 'Excluir'
     }
 
+    def get_object(self, queryset=None):
+        return get_object_or_404(Conversa, pk=self.kwargs['pk'], usuarios=self.request.user)
+
 
 class MensagemDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     model = Mensagem
@@ -273,6 +294,9 @@ class MensagemDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
         'botao': 'Excluir'
     }
 
+    def get_object(self, queryset=None):
+        return get_object_or_404(Mensagem, pk=self.kwargs['pk'], enviada_por__user=self.request.user)
+
 class FavoritoDelete(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     model = Favoritos
     fields = ['amigo']
@@ -283,19 +307,30 @@ class FavoritoDelete(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
         'titulo': 'Excluir contato',
         'botao': 'Excluir'   
     }
+
+    def get_object(self, queryset=None):    
+        return get_object_or_404(Favoritos, pk=self.kwargs['pk'], proprietario=self.request.user)
  
 
 class UsuarioList(LoginRequiredMixin, ListView):
     model= Usuario
     template_name = "paginas/listas/usuario.html"
 
-    def get_object(self, queryset=None):
-        return get_object_or_404(Usuario, pk=self.kwargs['pk'], usuario=self.request.user)
+    # filtrar para mostrar apenas os dados do proprio usuario, exceto para o superuser
+    # se for superuser, mostrar todos os usuarios
+    #deve mostrar também todos os dados dos usuarios, como nome, data_nasc, email, username, id e senha(password), para o superuser
+    def get_queryset(self):
+        if self.request.user.is_superuser:
+            return Usuario.objects.all()
+        else:
+            return Usuario.objects.filter(usuario=self.request.user)
+             
 
 
 class UniversoList(ListView):
     model= Universo
     template_name = "paginas/listas/universo.html"
+    
 
 
 class PersonagemList(ListView):
@@ -311,10 +346,17 @@ class MeusPersonagens(PersonagemList):
 class ConversaList(LoginRequiredMixin, ListView):
     model= Conversa
     template_name = "paginas/listas/conversa.html" 
+    def get_queryset(self):
+        qs = Conversa.objects.filter(usuarios=self.request.user)
+        return qs
 
 class MensagemList(LoginRequiredMixin, ListView):
     model= Mensagem
     template_name = "paginas/listas/mensagem.html"
+    #filtrar para mostrar apenas as mensagens enviadas pelo proprio usuario ou para ele
+    def get_queryset(self):
+        qs = Mensagem.objects.filter(enviada_por__user=self.request.user)
+        return qs 
 
 
 class CombateList(ListView):
@@ -324,4 +366,7 @@ class CombateList(ListView):
 class FavoritoList(ListView):
     model= Favoritos
     template_name= "paginas/listas/favoritos.html"
+    def get_queryset(self):
+        qs = Favoritos.objects.filter(proprietario=self.request.user)
+        return qs
 

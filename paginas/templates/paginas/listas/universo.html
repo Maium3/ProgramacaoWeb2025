@@ -4,6 +4,9 @@
 {% block conteudo %} 
 <h3>lista de Universos</h3>
 
+<!--botão para criar um universo, com a classe btn-outline-primary(botão "vazio" com a cor em volta do botão) -->
+<a class="btn btn-sm btn-outline-primary" href="{% url "criar_universo" %}">Novo Universo</a>
+
 <table class="table table-striped table-hover">
     <tr>
         <th>Nome</th>

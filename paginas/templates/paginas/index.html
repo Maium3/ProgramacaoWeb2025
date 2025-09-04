@@ -26,8 +26,16 @@
         }
 
         body {
-            background-color: #121212; /* De acordo com a imagem escura fornecida */
+            background-color: #080a39; /* De acordo com a imagem escura fornecida */
             color: white;
+        }
+
+        nav{
+          background-color: #080a39;
+          border-radius: 8px;
+          padding: 10px;
+          margin-bottom: 20px;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         #menu a {
@@ -35,6 +43,7 @@
             text-decoration: none;
             margin-right: 15px;
           }
+          
           
         ul{
           color: #ffffff;
@@ -53,6 +62,7 @@
 </head>
 <body class="container-fluid">
 
+    <!--em que linha estão localizados o botão de entrar e de voltar, estão na pagina index? -->
     
 
     <!-- Título com gradiente -->
@@ -65,7 +75,7 @@
         <img src="{% static 'imagens/logo.png' %}" alt="Logo" class="img-fluid" style="max-height: 150px;">
     </div>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <nav class="navbar navbar-expand-lg navbar-dark mb-4">
         <div class="container justify-content-center">
           <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
             <ul class="navbar-nav text-center">

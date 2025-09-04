@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block titulo %}
+    <title>PVP: The Multiversal Arena</title>
+    {% endblock titulo %}
+
+    <!-- Estilo personalizado -->
+    <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+
+    <!-- Bootstrap CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+
+    <!-- Estilo inline para gradiente do título -->
+    <style>
+        .gradient-title {
+            background: linear-gradient(to bottom, #59079c, #d094f2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: bold;
+        }
+
+        body {
+            background-color: #080a39; /* De acordo com a imagem escura fornecida */
+            color: white;
+        }
+
+        nav{
+          background-color: #080a39;
+          border-radius: 8px;
+          padding: 10px;
+          margin-bottom: 20px;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #menu a {
+            color: #ffffff;
+            text-decoration: none;
+            margin-right: 15px;
+          }
+          
+        input{
+          color: #605496;
+          text-color: #49b7d6;
+
+        }
+
+        input::placeholder {
+          color: #55d6fb; /* Cor do texto do placeholder */
+        }
+
+        button .entrar .cadastrar{
+          background-color: #362196;
+          text-color: #49b7d6;
+          color: white;
+          font-weight: bold;
+          border-radius: 8px;
+          padding: 10px;
+          margin-top: 10px;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="container-fluid">
+
+    <!-- Título com gradiente -->
+    <div class="text-center my-4">
+        <h1 class="gradient-title display-4">PVP: The Multiversal Arena</h1>
+        <img src="{% static 'imagens/logo.png' %}" alt="Logo" class="img-fluid" style="max-height: 150px;">
+    </div>
+
+    <!--input text para receber o nome du usuario ou email e com texto dentro informando que deve ser informado o 
+    "Nome de usuario ou email"-->
+
+    <input type="text" class="form-control mb-3" placeholder="Nome de usuário ou email" id="username">
+    <!--input password para receber a senha do usuario com texto dentro informando que deve ser informado a "Senha"-->
+    <input type="password" class="form-control mb-3" placeholder="Senha" id="senha">
+
+    <div class="row">
+        <div class="column">
+            <button class="btn w-100" onclick="location.href='{% url 'login' %}'" id="entrar">Entrar</button>
+        </div>
+        <div class="column">
+            <!--botão para criar um novo usuario usando a path registrar com o texto Cadastrar-->
+            <button class="btn  w-100" onclick="location.href='{% url 'registrar' %}'" id="cadastrar">Cadastrar</button>
+        </div>
+    </div>
+
+     <!--botão de redefinição de senha, por enquanto sem path, apenas um botão clicavel que não vai para lugar nenhum, permanece na pagina em que se encontra-->       
+    <button class="btn w-100" id="novaSenha">Esqueceu a senha</button>
+
+    <!--botão sobre que leva a pagina sobre, com o fundo transparente e a cor do texto em #ab06a2, no canto inferior direito da tela-->
+    <button class="btn position-absolute bottom-0 end-0 m-3" style="background-color: transparent; color: #ab06a2;" onclick="location.href='{% url 'sobre' %}'">Sobre</button>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
+            crossorigin="anonymous"></script>
+
+</body>
+</html>
