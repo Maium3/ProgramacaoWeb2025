@@ -80,13 +80,16 @@
     <!--input password para receber a senha do usuario com texto dentro informando que deve ser informado a "Senha"-->
     <input type="password" class="form-control mb-3" placeholder="Senha" id="senha">
 
-    <div class="row">
-        <div class="column">
-            <button class="btn w-100" onclick="location.href='{% url 'login' %}'" id="entrar">Entrar</button>
+    <!--alinhar centralmente a div row com os dois botoes de entrar e cadastrar e com espaçamento entre os botões-->
+    <!--os botoes devem ter a largura de 45% da coluna que estão inseridos-->
+    //a linha deve estar centralizada na tela e com espaçamento entre os botões
+    <div class="row justify-content-center mb-3" style="gap: 10px;">
+        <div class="column text-center">
+            <button class="btn w-45" onclick="location.href='{% url 'login' %}'" id="entrar">Entrar</button>
         </div>
-        <div class="column">
+        <div class="column text-center">
             <!--botão para criar um novo usuario usando a path registrar com o texto Cadastrar-->
-            <button class="btn  w-100" onclick="location.href='{% url 'registrar' %}'" id="cadastrar">Cadastrar</button>
+            <button class="btn  w-45" onclick="location.href='{% url 'registrar' %}'" id="cadastrar">Cadastrar</button>
         </div>
     </div>
 
