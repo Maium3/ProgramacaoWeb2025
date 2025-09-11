@@ -1,10 +1,11 @@
-from django.views.generic import TemplateView, ListView
+from django.views.generic import TemplateView, ListView, DetailView
 from django.views.generic.edit import  CreateView, UpdateView, DeleteView
 from .models import Usuario, Universo, Personagem, Conversa, Mensagem, Combate, Favoritos
 
 
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
+from braces.views import GroupRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.models import User, Group
 from .forms import UsuarioCadastroForm
@@ -12,7 +13,7 @@ from django .shortcuts import get_object_or_404
 from django.utils import timezone
 
 
-# Crie a view no final do arquivo ou em outro local que faça sentido
+
 class CadastroUsuarioView(CreateView):
     # Não tem o fields, pois ele é definido no forms.py
     form_class = UsuarioCadastroForm
@@ -25,7 +26,6 @@ class CadastroUsuarioView(CreateView):
         'botao': 'Registrar',
     }
 
-
     def form_valid(self, form):
         # pegar nome e data_nasc do form
         nome = form.cleaned_data.get('nome')
@@ -34,9 +34,10 @@ class CadastroUsuarioView(CreateView):
         # Faz o comportamento padrão do form_valid
         url = super().form_valid(form)
         # Busca ou cria um grupo com esse nome
-        grupo, criado = Group.objects.get_or_create(name='Usuários Comuns')
-        # Acessa o objeto criado e adiciona o usuário no grupo acima
-        self.object.groups.add(grupo)
+        grupo1, criado = Group.objects.get_or_create(name='Player ')
+        grupo2, criado = Group.objects.get_or_create(name='Mestre')
+        grupo3, criado = Group.objects.get_or_create(name='Administrador')
+        # Acessa o objeto grupo1 e grupo2 criados e permite o usuário decidir em qual grupo sera adcionado
 
         # Gera um código_id será o primeiro nome sem espaço em minúsculo + # + id do usário sempre formatado com pelo menos 4 dígitos
         codigo_id = f"{nome.split()[0].lower()}#{self.object.id:04d}"
@@ -53,9 +54,25 @@ class CadastroUsuarioView(CreateView):
         return url
 
 
+# DetailView para exibir conversa e suas mensagens
+class ConversaDetailView(DetailView):
+    model = Conversa
+    template_name = 'paginas/detalhe_conversa.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Busca todas as mensagens relacionadas a esta conversa
+        context['mensagens'] = self.object.mensagem_set.all()
+        return context
+
+
 
 class Inicio(TemplateView):
     template_name = "paginas/index.html"
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        return context
 
 class SobreView(TemplateView):
     template_name = 'paginas/sobre.html'
@@ -111,11 +128,11 @@ class ConversaCreate(LoginRequiredMixin, CreateView):
 
     }
 
-    def form_valid(self, form):
-        form.instance.usuarios = self.request.user
-        url = super().form_valid(form)
-        self.success_message = "A conversa foi iniciada com sucesso"
-        return url
+    # def form_valid(self, form):
+    #     form.instance.usuarios = self.request.user
+    #     url = super().form_valid(form)
+    #     self.success_message = "A conversa foi iniciada com sucesso"
+    #     return url
 
 class MensagemCreate(LoginRequiredMixin, CreateView):
     model = Mensagem
@@ -134,7 +151,8 @@ class MensagemCreate(LoginRequiredMixin, CreateView):
         self.success_message = "Mensagem enviada com sucesso"
         return url
 
-class CombateCreate(LoginRequiredMixin, CreateView):
+class CombateCreate(GroupRequiredMixin, CreateView):
+    group_required= ["Mestre"]
     model = Combate
     fields = ['conversa', 'mensagem']
     template_name = 'paginas/form.html'

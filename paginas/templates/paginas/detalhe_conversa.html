@@ -1,0 +1,15 @@
+
+<h1>Detalhes da Conversa #{{ object.pk }}</h1>
+
+<h2>Mensagens</h2>
+<ul>
+	{% for mensagem in mensagens %}
+		<li>
+			<strong>{{ mensagem.enviada_por }}</strong> em {{ mensagem.enviada_em|date:'d/m/Y H:i' }}:<br>
+			{{ mensagem.conteudo }}
+		</li>
+	{% empty %}
+		<li>Nenhuma mensagem nesta conversa.</li>
+	{% endfor %}
+</ul>
+<a href="{% url 'listar_conversas' %}">Voltar para lista de conversas</a>

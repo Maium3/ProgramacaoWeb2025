@@ -8,7 +8,7 @@ class Usuario(models.Model):
     codigo_id = models.CharField(max_length=16, verbose_name="ID", unique=True) 
 
     def __str__(self):
-        return self.usuario, self.nome, self.data_nasc, self.email, self.nickname, self.id
+        return f"{self.usuario.username} - {self.nome} - {self.data_nasc} - {self.codigo_id}"
 
 class Universo(models.Model):
     nome = models.CharField(max_length=255)
@@ -17,7 +17,7 @@ class Universo(models.Model):
     ultima_atualizacao = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return  self.nome, self.descricao, self.data_criacao, self.ultima_atualizacao
+        return  f"{self.nome} - {self.descricao} - {self.data_criacao} - {self.ultima_atualizacao}"
     
 class Personagem(models.Model):
     nome = models.CharField(max_length=100)
@@ -31,13 +31,13 @@ class Personagem(models.Model):
         return  self.nome, self.habilidades, self.caracteristicas, self.historia, self.user.nickname, self.user.id
     
 class Conversa(models.Model):
-    usuarios = models.ForeignKey(User, on_delete= models.PROTECT)
+    usuarios = models.ManyToManyField(User)
     universo = models.ForeignKey(Universo, on_delete= models.PROTECT)
     
 
     def __str__(self):
-        return  self.usuarios.nickname, self.universo.nome, self.mensagens.conteudo
-
+        return  f"{self.usuarios} - {self.universo}"
+    
 class Mensagem(models.Model):
     enviada_por = models.ForeignKey(Personagem, on_delete = models.PROTECT)
     enviada_em = models.DateTimeField(auto_now_add=True)
@@ -45,7 +45,7 @@ class Mensagem(models.Model):
     conteudo = models.TextField(1500)
 
     def __str__(self):
-        return  self.enviada_por, self.enviada_em, self.conteudo
+        return  f"{self.enviada_por} - {self.enviada_em} - {self.conversa_origem} - {self.conteudo}"
 
 class Combate(models.Model):
     conversa = models.ForeignKey(Conversa, on_delete = models.CASCADE)
@@ -54,7 +54,7 @@ class Combate(models.Model):
     perdedor = models.ForeignKey(Personagem, on_delete=models.CASCADE, related_name='perdedor')
 
     def __str__(self):
-        return  self.conversa, self.mensagem
+        return  f"{self.conversa} - {self.mensagem} - {self.ganhador} - {self.perdedor}"
         
 class Favoritos(models.Model):
     proprietario = models.ForeignKey(User, on_delete= models.CASCADE, related_name="proprietario")

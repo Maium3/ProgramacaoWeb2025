@@ -6,7 +6,7 @@ from .views import UsuarioCreate, UniversoCreate, PersonagemCreate, ConversaCrea
 from .views import UsuarioUpdate, UniversoUpdate, PersonagemUpdate, ConversaUpdate, MensagemUpdate
 from .views import UsuarioDelete, PersonagemDelete, ConversaDelete, MensagemDelete, FavoritoDelete
 from .views import UsuarioList, UniversoList, PersonagemList, ConversaList, MensagemList, CombateList, FavoritoList
-from .views import MeusPersonagens
+from .views import MeusPersonagens, ConversaDetailView
 from django.contrib.auth import views as auth_views
 from .views import CadastroUsuarioView
 
@@ -53,7 +53,7 @@ urlpatterns = [
     path('atualizar/usuario/<int:pk>/', UsuarioUpdate.as_view(), name="atualizar_usuario"),
     path('atualizar/universo/<int:pk>/', UniversoUpdate.as_view(), name="atualizar_universo"),
     path('atualizar/personagem/<int:pk>/', PersonagemUpdate.as_view(), name="alterar_personagem"),
-    path('atualizar/conversa/<int:pk>/', ConversaUpdate.as_view(), name="aualizar_conversa"),
+    path('atualizar/conversa/<int:pk>/', ConversaUpdate.as_view(), name="atualizar_conversa"),
     path('atualizar/mensagem/<int:pk>/', MensagemUpdate.as_view(), name="carregar_mensagem"),
     
     path('excluir-usuario/<int:pk>/', UsuarioDelete.as_view(), name="deletar_usuario"),
@@ -66,6 +66,7 @@ urlpatterns = [
     path('listar/Universos/', UniversoList.as_view(), name="listar_Universos"),
     path('listar/personagens/', PersonagemList.as_view(), name="listar_personagens"),
     path('listar/conversa/', ConversaList.as_view(), name="listar_conversas"),
+    path('conversa/<int:pk>/', ConversaDetailView.as_view(), name="detalhe_conversa"),
     path('listar/mensagens/', MensagemList.as_view(), name="listar_mensagens"),
     path('listar/combates/', CombateList.as_view(), name="listar_Combates"),
     path('lista/favoritos/', FavoritoList.as_view(), name="listar_contatos"),
