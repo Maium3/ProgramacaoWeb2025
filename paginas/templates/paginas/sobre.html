@@ -1,19 +1,43 @@
-{% extends "paginas/index.html" %}
-{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
 
-{% block conteudo %} 
-<h3>Sobre nós</h3>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sobre</title>
+    <link rel="stylesheet" href="/static/css/sobre.css">
+</head>
 
-<p id ="introducao"> 
-    Quem são os criadores do Software? <br>
-    O software foi desenvolvido por estudantes do  Instituto Federal de Educação, Ciência e Tecnologia do Paraná, Larissa Maiume M. Cruz e Richard Ramos.<br><br>
- Ao unir o conhecimento em tecnologia da programação adquirido durante o curso de técnico em Informática para criar algo novo a partir da observação de que as ferramentas de conversa usadas por jogadores de RPG não eram adequadas e ideiais.<br>
-Pensando nisso, foi desenvolvido um chat com sistema de combate integrado, cujo  objetivo foi tornar as sessões mais práticas e imersivas.<br>
-Usando Python, Django e conceitos de programação orientada a objetos, cada parte do projeto reflete o aprendizado e esforço dedicado durante o processo.<br>
-O projeto foi feito com entusiasmo e com o propósito de oferecer algo útil e divertido para a comunidade RPGista.  <br> <br>
+<body>
+    <div class="container">
+        <header>
+             
+            <a href="/" class="voltar" aria-label="Voltar">
+                <span class="chevron">‹</span>     
+            </a>
+            <h1 class="titulo">Sobre</h1>
 
+        </header>
+        <div class="conteudo">
+            <img src="/static/images/logo.png" alt="Arena Multiversal" class="logo">
 
+            <p>
+                O software foi desenvolvido por estudantes do Instituto Federal de Educação, Ciência e Tecnologia
+                do Paraná, <b>Larissa Maiume M. Cruz</b> e <b>Richard Ramos</b>. <br>
+                Ao unir o conhecimento em tecnologia da programação adquirido durante o curso de técnico em Informática
+                para criar algo novo a partir da observação de que as ferramentas de conversa usadas por jogadores de
+                RPG
+                não eram adequadas e ideais. <br>
+                Pensando nisso, foi desenvolvido um chat com sistema de combate integrado, cujo objetivo foi tornar as
+                sessões
+                mais práticas e imersivas. Usando Python, Django e conceitos de programação orientada a objetos, cada
+                parte
+                do projeto reflete o aprendizado e esforço dedicado durante o processo. <br>
+                O projeto foi feito com entusiasmo e com o propósito de oferecer algo útil e divertido para a comunidade
+                RPGista.
+            </p>
+        </div>
+    </div>
+</body>
 
-</p>
-
-{% endblock conteudo %}
+</html>

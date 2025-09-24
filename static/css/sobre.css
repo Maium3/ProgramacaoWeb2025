@@ -1,0 +1,88 @@
+body {
+    margin: 0;
+    font-family: 'Roboto Slab', serif;
+    background-color: #080a39;
+    /* fundo escuro */
+}
+.container {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin-bottom: 20px;
+}
+
+/* seta de voltar */
+
+
+
+/* botão de voltar (círculo com gradiente) */
+.voltar {
+    position: absolute;
+    left: 12px;
+    /* ajuste a posição se quiser */
+    top: 12px;
+    background: none !important;
+    -webkit-mask: none !important;
+    mask: none !important;
+    padding: 0 !important;
+    width: auto !important;
+    height: auto !important;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+/* ----------------- Opção A: seta como caractere (simples) ----------------- */
+.voltar .chevron {
+    display: inline-block;
+    font-size: 28px;
+    /* tam. da seta */
+    line-height: 1;
+    font-weight: 700;
+    /* gradiente no texto */
+    background: linear-gradient(90deg, #051879, #59079c, #ff5ce6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    /* fallback */
+    -webkit-font-smoothing: antialiased;
+}
+
+/* título com gradiente */
+.titulo {
+    font-size: 2rem;
+    font-weight: bold;
+    background: linear-gradient(180deg, #59079c, #d094f2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* imagem central */
+.logo {
+    width: 200px;
+    margin: 20px auto;
+    display: block;
+    border-radius: 10px;
+    box-shadow: 0 0 15px #000;
+}
+
+/* texto com gradiente */
+.conteudo p {
+    font-size: 19.5px;
+    line-height: 1.6;
+    margin-bottom: 16px;
+    background: linear-gradient(180deg, #5d0192, #b336fb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 800;
+    text-align: center;
+}
