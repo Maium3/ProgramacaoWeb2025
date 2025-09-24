@@ -70,3 +70,17 @@
     </div>
 </div>
 {% endblock conteudo %}
+
+
+{% block scripts %}
+<script>
+$(document).ready(function(){
+    // percorre os campos <select> do <form> e se tiver somente 1 option, seleciona ela 
+    $('#form-crud select').each(function(){
+        if($(this).find('option').length == 2){
+            $(this).prop('selectedIndex', 1);
+        }
+    });
+});
+</script>
+{% endblock scripts %}

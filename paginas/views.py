@@ -9,8 +9,9 @@ from braces.views import GroupRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.models import User, Group
 from .forms import UsuarioCadastroForm
-from django .shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
+from django.http import Http404
 
 
 
@@ -62,7 +63,7 @@ class ConversaDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # Busca todas as mensagens relacionadas a esta conversa
-        context['mensagens'] = self.object.mensagem_set.all()
+        context['mensagens'] = self.object.mensagem_set.all().order_by('enviada_em')
         return context
 
 
@@ -99,10 +100,14 @@ class UniversoCreate(SuccessMessageMixin, LoginRequiredMixin, CreateView):
         'titulo': 'Cadastrar Novo Universo',
         'botao': 'Cadastrar'   
     }
+
+    def form_valid(self, form):
+        form.instance.criado_por = self.request.user
+        return super().form_valid(form)
     
 class PersonagemCreate(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     model = Personagem 
-    fields = ['nome', 'habilidades', 'caracteristicas', 'historia', 'user']
+    fields = ['nome', 'habilidades', 'caracteristicas', 'historia']
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('listar_personagens')
     success_message = "Personagem criado com sucesso"
@@ -112,14 +117,14 @@ class PersonagemCreate(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     }
 
     def form_valid(self, form):
-        form.instance.user = self.request.user
+        form.instance.criado_por = self.request.user
         url = super().form_valid(form)
         self.success_message = f"O Personagem {form.instance.nome} foi criado com sucesso"
         return url
     
 class ConversaCreate(LoginRequiredMixin, CreateView):
     model = Conversa
-    fields = ['usuarios', 'universo']
+    fields = ['titulo', 'personagens', 'universo']
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('listar_conversas')
     extra_context = {
@@ -136,7 +141,7 @@ class ConversaCreate(LoginRequiredMixin, CreateView):
 
 class MensagemCreate(LoginRequiredMixin, CreateView):
     model = Mensagem
-    fields = ['enviada_por', 'enviada_em', 'conteudo', 'conversa_origem']
+    fields = ['conversa_origem', 'conteudo', 'enviada_por']
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('Inicio')
     extra_context = {
@@ -144,17 +149,26 @@ class MensagemCreate(LoginRequiredMixin, CreateView):
         'botao': "Enviar"
     }
 
-    def form_valid(self, form):
-        form.instance.enviada_por = Personagem.objects.get(user=self.request.user)
-        form.instance.enviada_em = form.instance.enviada_em or timezone.now()
-        url = super().form_valid(form)
-        self.success_message = "Mensagem enviada com sucesso"
-        return url
+    def get_form(self, *args, **kwargs):
+        # Listar apenas os personagens criados pelo usuário logado
+        form = super().get_form(*args, **kwargs)
+        form.fields['enviada_por'].queryset = Personagem.objects.filter(criado_por=self.request.user)
+        # Se recebe um paramétro 'conversa_id' na URL, preenche o campo conversa_origem com essa conversa e torna o campo readonly
+        conversa_id = self.request.GET.get('conversa_id')
+        if conversa_id:
+            form.fields['conversa_origem'].initial = conversa_id
+            form.fields['conversa_origem'].widget.attrs['readonly'] = True
+        return form
+    
+    # Ao cadastrar a mensagem, redirecione para a url do DetailView de conversa
+    def get_success_url(self):
+        return reverse_lazy('detalhe_conversa', kwargs={'pk': self.object.conversa_origem.pk})
+    
 
 class CombateCreate(GroupRequiredMixin, CreateView):
     group_required= ["Mestre"]
     model = Combate
-    fields = ['conversa', 'mensagem']
+    fields = ['conversa', 'mensagem', 'ganhador', 'perdedor']
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('listar_Combates')
     success_message = "Combate iniciado com sucesso"
@@ -165,7 +179,7 @@ class CombateCreate(GroupRequiredMixin, CreateView):
 
 class FavoritoCreate(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Favoritos
-    fields = ['user','amigo']
+    fields = ['amigo']
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('listar_contatos')
     success_message = "Usuário adcionado com sucesso"
@@ -210,29 +224,34 @@ class UniversoUpdate(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
         'botao': 'Salvar'   
     }
 
-    #alterar o metodo que busca o objeto pelo id(get_object) para que só o proprio usuario possa alterar seus dados
     def get_object(self, queryset=None):
-        return get_object_or_404(Universo, pk=self.kwargs['pk'], usuario=self.request.user)
+        obj = get_object_or_404(Universo, pk=self.kwargs['pk'])
+        if obj.criado_por != self.request.user and not self.request.user.groups.filter(name='Administrador').exists():
+            raise Http404("Você não tem permissão para editar este universo.")
+        return obj
     
 
 class PersonagemUpdate(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     model = Personagem 
-    fields = ['nome', 'habilidades', 'caracteristicas', 'historia', 'user']
+    fields = ['nome', 'habilidades', 'caracteristicas', 'historia']
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('listar_personagens')
     
-    success_message = "O Personagem %(nome)% foi atualizado com sucesso"
+    success_message = "O Personagem %(nome)s foi atualizado com sucesso"
     extra_context = {  
         'titulo': 'Alterar Personagem',
         'botao': 'Alterar'
     }
 
     def get_object(self, queryset=None):
-        return get_object_or_404(Personagem, pk=self.kwargs['pk'], user=self.request.user)
+        obj = get_object_or_404(Personagem, pk=self.kwargs['pk'])
+        if obj.criado_por != self.request.user and not self.request.user.groups.filter(name='Administrador').exists():
+            raise Http404("Você não tem permissão para editar este personagem.")
+        return obj
 
 class ConversaUpdate(LoginRequiredMixin, UpdateView):
     model = Conversa
-    fields = ['usuarios', 'universo']
+    fields = ['titulo', 'personagens', 'universo']
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('Inicio')
     extra_context = {
@@ -241,12 +260,15 @@ class ConversaUpdate(LoginRequiredMixin, UpdateView):
     }
 
     def get_object(self, queryset=None):
-        return get_object_or_404(Conversa, pk=self.kwargs['pk'], usuarios=self.request.user)
+        obj = get_object_or_404(Conversa, pk=self.kwargs['pk'])
+        if not obj.personagens.filter(criado_por=self.request.user).exists() and not self.request.user.groups.filter(name='Administrador').exists():
+            raise Http404("Você não tem permissão para editar esta conversa.")
+        return obj
 
     
 class MensagemUpdate(LoginRequiredMixin, UpdateView):
     model = Mensagem
-    fields = ['enviada_por', 'enviada_em', 'conteudo', 'conversa_origem']
+    fields = ['enviada_por', 'conteudo', 'conversa_origem']
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('listar_mensagens')
     success_message = "Mensagem atualizada com sucesso"
@@ -256,7 +278,10 @@ class MensagemUpdate(LoginRequiredMixin, UpdateView):
     }
 
     def get_object(self, queryset=None):
-        return get_object_or_404(Mensagem, pk=self.kwargs['pk'], enviada_por__user=self.request.user)
+        obj = get_object_or_404(Mensagem, pk=self.kwargs['pk'])
+        if obj.enviada_por.criado_por != self.request.user and not self.request.user.groups.filter(name='Administrador').exists():
+            raise Http404("Você não tem permissão para editar esta mensagem.")
+        return obj
 
 
 class UsuarioDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
@@ -274,6 +299,23 @@ class UsuarioDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
         return get_object_or_404(Usuario, pk=self.kwargs['pk'], usuario=self.request.user)
 
 
+class UniversoDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
+    model = Universo
+    template_name = 'paginas/form.html'
+    success_url = reverse_lazy('listar_Universos')
+    success_message = "Universo deletado com sucesso"
+    extra_context = {
+        'titulo': 'Excluir Universo',
+        'botao': 'Excluir'
+    }
+
+    def get_object(self, queryset=None):
+        obj = get_object_or_404(Universo, pk=self.kwargs['pk'])
+        if obj.criado_por != self.request.user and not self.request.user.groups.filter(name='Administrador').exists():
+            raise Http404("Você não tem permissão para excluir este universo.")
+        return obj
+
+
 class PersonagemDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     model = Personagem
     template_name = 'paginas/form.html'
@@ -285,7 +327,10 @@ class PersonagemDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     }
 
     def get_object(self, queryset=None):
-        return get_object_or_404(Personagem, pk=self.kwargs['pk'], user=self.request.user)
+        obj = get_object_or_404(Personagem, pk=self.kwargs['pk'])
+        if obj.criado_por != self.request.user and not self.request.user.groups.filter(name='Administrador').exists():
+            raise Http404("Você não tem permissão para excluir este personagem.")
+        return obj
 
 
 class ConversaDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
@@ -299,7 +344,10 @@ class ConversaDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     }
 
     def get_object(self, queryset=None):
-        return get_object_or_404(Conversa, pk=self.kwargs['pk'], usuarios=self.request.user)
+        obj = get_object_or_404(Conversa, pk=self.kwargs['pk'])
+        if not obj.personagens.filter(criado_por=self.request.user).exists() and not self.request.user.groups.filter(name='Administrador').exists():
+            raise Http404("Você não tem permissão para excluir esta conversa.")
+        return obj
 
 
 class MensagemDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
@@ -313,11 +361,13 @@ class MensagemDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     }
 
     def get_object(self, queryset=None):
-        return get_object_or_404(Mensagem, pk=self.kwargs['pk'], enviada_por__user=self.request.user)
+        obj = get_object_or_404(Mensagem, pk=self.kwargs['pk'])
+        if obj.enviada_por.criado_por != self.request.user and not self.request.user.groups.filter(name='Administrador').exists():
+            raise Http404("Você não tem permissão para excluir esta mensagem.")
+        return obj
 
 class FavoritoDelete(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     model = Favoritos
-    fields = ['amigo']
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('listar_contatos')
     success_message = "Usuário excluido com sucesso"
@@ -326,8 +376,11 @@ class FavoritoDelete(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
         'botao': 'Excluir'   
     }
 
-    def get_object(self, queryset=None):    
-        return get_object_or_404(Favoritos, pk=self.kwargs['pk'], proprietario=self.request.user)
+    def get_object(self, queryset=None):
+        obj = get_object_or_404(Favoritos, pk=self.kwargs['pk'])
+        if obj.proprietario != self.request.user and not self.request.user.groups.filter(name='Administrador').exists():
+            raise Http404("Você não tem permissão para excluir este favorito.")
+        return obj
  
 
 class UsuarioList(LoginRequiredMixin, ListView):
@@ -342,49 +395,84 @@ class UsuarioList(LoginRequiredMixin, ListView):
             return Usuario.objects.all()
         else:
             return Usuario.objects.filter(usuario=self.request.user)
-             
+            
 
-
-class UniversoList(ListView):
+class UniversoList(LoginRequiredMixin, ListView):
     model= Universo
     template_name = "paginas/listas/universo.html"
     
 
-
-class PersonagemList(ListView):
+class PersonagemList(LoginRequiredMixin, ListView):
     model= Personagem
     template_name = "paginas/listas/personagem.html"
 
+
 class MeusPersonagens(PersonagemList):
     def get_queryset(self):
-        qs = Personagem.objects.filter(user=self.request.user)
+        qs = super().get_queryset()
+        qs = qs.filter(criado_por=self.request.user)
         return qs
 
 
 class ConversaList(LoginRequiredMixin, ListView):
     model= Conversa
     template_name = "paginas/listas/conversa.html" 
+
+    # Se receber um parâmetro 'universo_id' na URL, filtra as conversas por esse universo
     def get_queryset(self):
-        qs = Conversa.objects.filter(usuarios=self.request.user)
+        qs = super().get_queryset()
+        # Se recebe o universo_id do kwargs
+        universo_id = self.kwargs.get('universo_id')
+        if universo_id:
+            qs = qs.filter(universo__id=universo_id)
         return qs
+
+
+class MinhasConversasList(LoginRequiredMixin, ListView):
+    model= Conversa
+    template_name = "paginas/listas/conversa.html"
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        # Lista todas as conversas de um universo que tenham personagens criados pelo usuário logado
+        qs = qs.filter(personagens__criado_por=self.request.user).distinct()
+        return qs
+    
 
 class MensagemList(LoginRequiredMixin, ListView):
     model= Mensagem
     template_name = "paginas/listas/mensagem.html"
-    #filtrar para mostrar apenas as mensagens enviadas pelo proprio usuario ou para ele
+    # Se recebe o id de uma conversa, filtra as mensagens dessa conversa
     def get_queryset(self):
-        qs = Mensagem.objects.filter(enviada_por__user=self.request.user)
+        qs = super().get_queryset()
+        conversa_id = self.request.GET.get('conversa_id')
+        if conversa_id:
+            qs = qs.filter(conversa_origem__id=conversa_id)
         return qs 
+    
+
+class MinhasMensagensList(LoginRequiredMixin, ListView):
+    model= Mensagem
+    template_name = "paginas/listas/mensagem.html"
+
+    # Filtra as mensagens de conversas que tem somente meu personagem
+    def get_queryset(self):
+        qs = super().get_queryset()
+        qs = qs.filter(enviada_por__criado_por=self.request.user)
+        return qs
 
 
 class CombateList(ListView):
     model= Combate
-    template_name = "paginas/listas/usuario.html" 
+    template_name = "paginas/listas/combate.html" 
+
 
 class FavoritoList(ListView):
     model= Favoritos
     template_name= "paginas/listas/favoritos.html"
+    # Filtra favoritos do usuário logado
     def get_queryset(self):
-        qs = Favoritos.objects.filter(proprietario=self.request.user)
+        qs = super().get_queryset()
+        qs = qs.filter(proprietario=self.request.user)
         return qs
 

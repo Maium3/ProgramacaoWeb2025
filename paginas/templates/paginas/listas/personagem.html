@@ -13,8 +13,10 @@
  <table class="table table-striped table-hover">
     <tr>
             <th>Nome</th>
+            <th>Habilidades</th>
+            <th>Características</th>
             <th>História</th>
-            <th>User</th>
+            <th>Criado por</th>
             <th>Opções</th>
     
         </tr>
@@ -23,8 +25,10 @@
     
     <tr>
         <td>{{ personagem.nome}}</td>
+        <td>{{ personagem.habilidades}}</td>
+        <td>{{ personagem.caracteristicas}}</td>
         <td>{{ personagem.historia}}</td>
-        <td>{{ personagem.user}}</td>
+        <td>{{ personagem.criado_por}}</td>
         <td>
             <a class="btn btn-sm btn-dark" href="{% url "alterar_personagem" personagem.pk %}">Editar</a>
             <a class="btn btn-sm btn-danger" href="{% url "deletar_personagem" personagem.pk %}">Excluir</a>
@@ -33,7 +37,7 @@
 
     {% empty %}
     <tr>
-        <td colspan="3">Nenhum personagem encontrado</td>
+        <td colspan="6">Nenhum personagem encontrado</td>
     </tr>
     
     {% endfor %}

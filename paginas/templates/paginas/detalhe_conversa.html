@@ -1,15 +1,69 @@
+{% extends "paginas/index.html" %}
+{% load static %}
 
-<h1>Detalhes da Conversa #{{ object.pk }}</h1>
+{% block conteudo %}
+<style>
+.chat-container {
+    max-height: 600px;
+    overflow-y: auto;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f8f9fa;
+}
+.message {
+    margin-bottom: 10px;
+}
+.message-bubble {
+    display: inline-block;
+    max-width: 70%;
+    padding: 10px;
+    border-radius: 10px;
+    word-wrap: break-word;
+}
+.message.text-end .message-bubble {
+    background-color: #007bff !important;
+    color: white !important;
+}
+.message:not(.text-end) .message-bubble {
+    background-color: #6610f2 !important;
+}
+.send-message-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+</style>
 
-<h2>Mensagens</h2>
-<ul>
-	{% for mensagem in mensagens %}
-		<li>
-			<strong>{{ mensagem.enviada_por }}</strong> em {{ mensagem.enviada_em|date:'d/m/Y H:i' }}:<br>
-			{{ mensagem.conteudo }}
-		</li>
-	{% empty %}
-		<li>Nenhuma mensagem nesta conversa.</li>
-	{% endfor %}
-</ul>
-<a href="{% url 'listar_conversas' %}">Voltar para lista de conversas</a>
+<h3>Detalhes da Conversa: {{ object.titulo }}</h3>
+<p><strong>Universo:</strong> {{ object.universo }}</p>
+<p><strong>Personagens:</strong> {{ object.personagens.all|join:", " }}</p>
+
+<h4>Mensagens</h4>
+<div class="chat-container">
+    {% for mensagem in mensagens %}
+    <div class="message {% if mensagem.enviada_por.criado_por == user %}text-end{% else %}text-start{% endif %}">
+        <div class="message-bubble">
+            <strong>{{ mensagem.enviada_por }}</strong><br>
+            {{ mensagem.conteudo }}<br>
+            <small>{{ mensagem.enviada_em|date:'d/m/Y H:i:s' }}</small>
+        </div>
+    </div>
+    {% empty %}
+    <div class="message">
+        <div class="message-bubble bg-light">
+            Nenhuma mensagem nesta conversa.
+        </div>
+    </div>
+    {% endfor %}
+
+	<p class="mt-3 text-center">
+		<a class="btn btn-success" href="{% url 'enviar_mensagem' %}?conversa_id={{ object.pk }}">Enviar Mensagem</a>>
+
+	</p>
+
+</div>
+
+<a class="btn btn-secondary btn-lg mt-3" href="{% url 'listar_conversas' %}">Voltar para lista de conversas</a>
+{% endblock conteudo %}

@@ -7,7 +7,9 @@
 <table class="table table-striped table-hover">
     <tr>
         <th>ID</th>
-        <th>nickname</th>
+        <th>Nome</th>
+        <th>Data de Nascimento</th>
+        <th>Username</th>
         <th>Opções</th>
     </tr>
     
@@ -15,6 +17,8 @@
     
     <tr>
         <td>{{ user.codigo_id}}</td>
+        <td>{{ user.nome}}</td>
+        <td>{{ user.data_nasc}}</td>
         <td>{{ user.usuario.username}}</td>
         <td>
             <a class="btn btn-sm btn-dark" href="{% url "atualizar_usuario" user.pk %}">Editar</a>
@@ -24,7 +28,7 @@
 
     {% empty %}
     <tr>
-        <td colspan="3">Nenhum usúario encontrado</td>
+        <td colspan="5">Nenhum usuário encontrado</td>
     </tr>
     
     {% endfor %}

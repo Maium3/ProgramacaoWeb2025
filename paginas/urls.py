@@ -4,9 +4,9 @@ from django.urls import path
 from .views import Inicio, SobreView
 from .views import UsuarioCreate, UniversoCreate, PersonagemCreate, ConversaCreate, MensagemCreate, CombateCreate, FavoritoCreate
 from .views import UsuarioUpdate, UniversoUpdate, PersonagemUpdate, ConversaUpdate, MensagemUpdate
-from .views import UsuarioDelete, PersonagemDelete, ConversaDelete, MensagemDelete, FavoritoDelete
+from .views import UsuarioDelete, PersonagemDelete, ConversaDelete, MensagemDelete, FavoritoDelete, UniversoDelete
 from .views import UsuarioList, UniversoList, PersonagemList, ConversaList, MensagemList, CombateList, FavoritoList
-from .views import MeusPersonagens, ConversaDetailView
+from .views import MeusPersonagens, ConversaDetailView, MinhasConversasList, MinhasMensagensList
 from django.contrib.auth import views as auth_views
 from .views import CadastroUsuarioView
 
@@ -57,6 +57,7 @@ urlpatterns = [
     path('atualizar/mensagem/<int:pk>/', MensagemUpdate.as_view(), name="carregar_mensagem"),
     
     path('excluir-usuario/<int:pk>/', UsuarioDelete.as_view(), name="deletar_usuario"),
+    path('excluir-universo/<int:pk>/', UniversoDelete.as_view(), name="excluir_universo"),
     path('excluir-personagem/<int:pk>/', PersonagemDelete.as_view(), name="deletar_personagem"),
     path('excluir-conversa/<int:pk>/', ConversaDelete.as_view(), name="excluir_conversa"),
     path('excluir-mensagem/<int:pk>/', MensagemDelete.as_view(), name="excluir_mensagem"),
@@ -66,11 +67,14 @@ urlpatterns = [
     path('listar/Universos/', UniversoList.as_view(), name="listar_Universos"),
     path('listar/personagens/', PersonagemList.as_view(), name="listar_personagens"),
     path('listar/conversa/', ConversaList.as_view(), name="listar_conversas"),
-    path('conversa/<int:pk>/', ConversaDetailView.as_view(), name="detalhe_conversa"),
+    path('listar/conversa/<int:universo_id>/', ConversaList.as_view(), name="listar_conversas"),
     path('listar/mensagens/', MensagemList.as_view(), name="listar_mensagens"),
     path('listar/combates/', CombateList.as_view(), name="listar_Combates"),
     path('lista/favoritos/', FavoritoList.as_view(), name="listar_contatos"),
+    path('minhas-conversas/', MinhasConversasList.as_view(), name="minhas_conversas"),
+    path('minhas-mensagens/', MinhasMensagensList.as_view(), name="minhas_mensagens"),
 
+    path('conversa/<int:pk>/', ConversaDetailView.as_view(), name="detalhe_conversa"),
 
     path('listar/meus-personagens/', MeusPersonagens.as_view(), name="listando_personagens")
     
