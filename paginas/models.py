@@ -55,6 +55,7 @@ class Mensagem(models.Model):
 class Combate(models.Model):
     conversa = models.ForeignKey(Conversa, on_delete = models.CASCADE)
     mensagem = models.ForeignKey(Mensagem, on_delete=models.CASCADE)
+    # criar o atributo mestre_da_mesa que deverá inserir um usuário mestre
     ganhador = models.ForeignKey(Personagem, on_delete=models.CASCADE, related_name='ganhador')
     perdedor = models.ForeignKey(Personagem, on_delete=models.CASCADE, related_name='perdedor')
 
