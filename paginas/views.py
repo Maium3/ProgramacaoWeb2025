@@ -56,7 +56,7 @@ class CadastroUsuarioView(CreateView):
 
 
 # DetailView para exibir conversa e suas mensagens
-class ConversaDetailView(DetailView):
+class ConversaDetailView(LoginRequiredMixin, DetailView):
     model = Conversa
     template_name = 'paginas/detalhe_conversa.html'
 
@@ -64,6 +64,8 @@ class ConversaDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         # Busca todas as mensagens relacionadas a esta conversa
         context['mensagens'] = self.object.mensagem_set.all().order_by('enviada_em')
+        # Lista os personagens do usuário logado para permitir selecionar quem envia a mensagem
+        context['meus_personagens'] = Personagem.objects.filter(criado_por=self.request.user)
         return context
 
 
@@ -107,7 +109,7 @@ class UniversoCreate(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     
 class PersonagemCreate(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     model = Personagem 
-    fields = ['nome', 'habilidades', 'caracteristicas', 'historia']
+    fields = ['nome', 'habilidades', 'caracteristicas', 'historia', ]
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('listar_personagens')
     success_message = "Personagem criado com sucesso"
@@ -163,7 +165,9 @@ class MensagemCreate(LoginRequiredMixin, CreateView):
     # Ao cadastrar a mensagem, redirecione para a url do DetailView de conversa
     def get_success_url(self):
         return reverse_lazy('detalhe_conversa', kwargs={'pk': self.object.conversa_origem.pk})
+
     
+
 
 class CombateCreate(GroupRequiredMixin, CreateView):
     group_required= ["Mestre"]
