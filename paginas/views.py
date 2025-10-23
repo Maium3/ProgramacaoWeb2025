@@ -109,7 +109,7 @@ class UniversoCreate(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     
 class PersonagemCreate(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     model = Personagem 
-    fields = ['nome', 'habilidades', 'caracteristicas', 'historia', ]
+    fields = ['nome', 'habilidades', 'caracteristicas', 'historia' ]
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('listar_personagens')
     success_message = "Personagem criado com sucesso"

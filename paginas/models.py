@@ -27,7 +27,7 @@ class Personagem(models.Model):
     habilidades = models.TextField()
     caracteristicas = models.TextField(verbose_name="características", null=True, blank=True) 
     historia = models.TextField(verbose_name="história", null=True, blank=True)
-    universo_origem = models.ForeignKey(Universo, on_delete=models.PROTECT)
+    
     
 
     def __str__(self):
