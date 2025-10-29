@@ -3,106 +3,556 @@
 
 {% block conteudo %}
 <style>
-.chat-container {
-    max-height: 600px;
-    overflow-y: auto;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: #080a39;
-}
-.message {
-    margin-bottom: 10px;
-}
-.message-bubble {
-    display: inline-block;
-    max-width: 70%;
-    padding: 10px;
-    border-radius: 10px;
-    word-wrap: break-word;
-}
-.message.text-end .message-bubble {
-     /* roxo gradiente base (fallback com background-color) */
-    background-image: linear-gradient(135deg, #8a2be2 0%, #7b2cff 45%, #4b0082 100%);
-    background-color: #6610f2;
-    background-size: cover;
-    color: #fff;
-    border: 1px solid rgba(255,255,255,0.08);
-    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
-}
-<!--.message-bubble {
-    /* roxo gradiente base (fallback com background-color) */
-    background-image: linear-gradient(135deg, #8a2be2 0%, #7b2cff 45%, #4b0082 100%);
-    background-color: #6610f2;
-    background-size: cover;
-    color: #fff;
-    border: 1px solid rgba(255,255,255,0.08);
-    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
-}-->
+    /* Header da Conversa */
+    .conversation-header {
+        background: linear-gradient(135deg, #5d0192 0%, #b336fb 100%);
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 12px rgba(93, 1, 146, 0.3);
+    }
 
-/* gradiente levemente diferente para mensagens enviadas (alinha à direita) */
-.message.text-end .message-bubble {
-    background-image: linear-gradient(135deg, #6f4bd6 0%, #5a3fae 60%, #3e1f89 100%) !important;
-    color: #fff !important;
-}
+    .conversation-header h2 {
+        color: white;
+        margin: 0 0 0.5rem 0;
+        font-weight: 600;
+    }
 
-.message:not(.text-end) .message-bubble {
-    background-color: #605496 !important;
-}
-.send-message-btn {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 1000;
-}
+    .conversation-header-info {
+        display: flex;
+        gap: 2rem;
+        flex-wrap: wrap;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.9rem;
+    }
+
+    .conversation-header-info strong {
+        color: white;
+        display: block;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        opacity: 0.8;
+        margin-bottom: 0.25rem;
+    }
+
+    /* Chat Container */
+    .chat-container {
+        background-color: #0f1238;
+        border-radius: 12px;
+        border: 1px solid rgba(179, 54, 251, 0.2);
+        height: 500px;
+        overflow-y: auto;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Scrollbar customizado */
+    .chat-container::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .chat-container::-webkit-scrollbar-track {
+        background: rgba(179, 54, 251, 0.1);
+        border-radius: 10px;
+    }
+
+    .chat-container::-webkit-scrollbar-thumb {
+        background: rgba(179, 54, 251, 0.3);
+        border-radius: 10px;
+    }
+
+    .chat-container::-webkit-scrollbar-thumb:hover {
+        background: rgba(179, 54, 251, 0.5);
+    }
+
+    /* Mensagens */
+    .message {
+        display: flex;
+        margin-bottom: 0.5rem;
+        animation: fadeIn 0.3s ease-in;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .message.sent {
+        justify-content: flex-end;
+    }
+
+    .message.received {
+        justify-content: flex-start;
+    }
+
+    /* Wrapper da Mensagem */
+    .message-wrapper {
+        display: flex;
+        gap: 0.75rem;
+        max-width: 70%;
+        align-items: flex-end;
+    }
+
+    .message.sent .message-wrapper {
+        flex-direction: row-reverse;
+    }
+
+    /* Avatar da Mensagem */
+    .message-avatar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 36px;
+        height: 36px;
+        background: linear-gradient(135deg, #5d0192 0%, #b336fb 100%);
+        border-radius: 50%;
+        font-size: 0.9rem;
+        color: white;
+        flex-shrink: 0;
+    }
+
+    .message.sent .message-avatar {
+        background: linear-gradient(135deg, #b336fb 0%, #5d0192 100%);
+    }
+
+    /* Bolha da Mensagem */
+    .message-bubble {
+        padding: 0.75rem 1rem;
+        border-radius: 12px;
+        word-wrap: break-word;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .message.received .message-bubble {
+        background-color: #1a1d4d;
+        border: 1px solid rgba(179, 54, 251, 0.2);
+        color: #e0e0e8;
+    }
+
+    .message.sent .message-bubble {
+        background: linear-gradient(135deg, #b336fb 0%, #8a1fb0 100%);
+        color: white;
+        border: none;
+    }
+
+    /* Conteúdo da Mensagem */
+    .bubble-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+        font-size: 0.85rem;
+    }
+
+    .bubble-sender {
+        font-weight: 600;
+        color: #b336fb;
+    }
+
+    .message.sent .bubble-sender {
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    .bubble-time {
+        font-size: 0.75rem;
+        opacity: 0.7;
+    }
+
+    .message.received .bubble-time {
+        color: #8a8aaa;
+    }
+
+    .message.sent .bubble-time {
+        color: rgba(255, 255, 255, 0.6);
+    }
+
+    .bubble-content {
+        line-height: 1.5;
+        white-space: pre-wrap;
+        word-break: break-word;
+        margin: 0;
+    }
+
+    /* Empty State */
+    .empty-messages {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        color: #8a8aaa;
+        text-align: center;
+    }
+
+    .empty-messages i {
+        font-size: 3rem;
+        color: #b336fb;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+
+    /* Formulário de Envio */
+    .message-input-section {
+        background-color: #1a1d4d;
+        padding: 1.5rem;
+        border-radius: 12px;
+        border: 1px solid rgba(179, 54, 251, 0.2);
+    }
+
+    .message-input-form {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+    }
+
+    .character-select {
+        background-color: #0f1238;
+        border: 1px solid rgba(179, 54, 251, 0.3);
+        color: #e0e0e8;
+        padding: 0.75rem;
+        border-radius: 8px;
+        flex: 0 1 200px;
+        min-width: 150px;
+    }
+
+    .character-select:focus {
+        outline: none;
+        border-color: #b336fb;
+        box-shadow: 0 0 8px rgba(179, 54, 251, 0.3);
+    }
+
+    .character-select option {
+        background-color: #0f1238;
+        color: #e0e0e8;
+    }
+
+    .message-input {
+        flex: 1;
+        min-width: 200px;
+        background-color: #0f1238;
+        border: 1px solid rgba(179, 54, 251, 0.3);
+        color: #e0e0e8;
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        font-size: 0.95rem;
+    }
+
+    .message-input::placeholder {
+        color: #8a8aaa;
+    }
+
+    .message-input:focus {
+        outline: none;
+        border-color: #b336fb;
+        box-shadow: 0 0 8px rgba(179, 54, 251, 0.3);
+    }
+
+    .send-btn {
+        background: linear-gradient(135deg, #b336fb 0%, #8a1fb0 100%);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+    }
+
+    .send-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(179, 54, 251, 0.3);
+    }
+
+    .send-btn:active {
+        transform: translateY(0);
+    }
+
+    /* Info Section */
+    .info-section {
+        background-color: #1a1d4d;
+        padding: 1rem;
+        border-radius: 8px;
+        border: 1px solid rgba(179, 54, 251, 0.1);
+        margin-bottom: 1rem;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .info-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .info-item strong {
+        color: #b336fb;
+        min-width: 120px;
+    }
+
+    .info-item span {
+        color: #b0b0d0;
+    }
+
+    .participants-tags {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-top: 0.5rem;
+    }
+
+    .participant-badge {
+        background-color: rgba(179, 54, 251, 0.2);
+        border: 1px solid rgba(179, 54, 251, 0.3);
+        color: #b336fb;
+        padding: 0.35rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+    }
+
+    /* Navigation */
+    .navigation-buttons {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+
+    .back-btn {
+        background-color: #1a1d4d;
+        color: #b336fb;
+        border: 1px solid rgba(179, 54, 251, 0.3);
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .back-btn:hover {
+        background-color: rgba(179, 54, 251, 0.1);
+        border-color: #b336fb;
+        color: #b336fb;
+    }
+
+    /* Responsividade */
+    @media (max-width: 768px) {
+        .conversation-header-info {
+            gap: 1rem;
+            font-size: 0.85rem;
+        }
+
+        .chat-container {
+            height: 400px;
+            padding: 1rem;
+        }
+
+        .message-wrapper {
+            max-width: 85%;
+        }
+
+        .message-input-form {
+            flex-direction: column;
+        }
+
+        .character-select {
+            flex: 1;
+            min-width: 100%;
+        }
+
+        .message-input {
+            min-width: 100%;
+        }
+
+        .send-btn {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .conversation-header {
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .conversation-header h2 {
+            font-size: 1.5rem;
+        }
+
+        .chat-container {
+            height: 350px;
+            padding: 0.75rem;
+            gap: 0.75rem;
+        }
+
+        .message-wrapper {
+            max-width: 90%;
+        }
+
+        .message-avatar {
+            min-width: 32px;
+            height: 32px;
+            font-size: 0.8rem;
+        }
+
+        .message-bubble {
+            padding: 0.6rem 0.8rem;
+            font-size: 0.9rem;
+        }
+
+        .bubble-header {
+            font-size: 0.8rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .bubble-time {
+            font-size: 0.7rem;
+        }
+
+        .message-input-section {
+            padding: 1rem;
+        }
+
+        .info-section {
+            padding: 0.75rem;
+        }
+    }
 </style>
 
-
-<p><strong>Universo:</strong> {{ object.universo }}</p>
-<p><strong>Personagens:</strong> {{ object.personagens.all|join:", " }}</p>
-
-<h4>Mensagens</h4>
-<div class="chat-container" style="width: 1200px; height: 400px;">
-    {% for mensagem in mensagens %}
-    <div class="message {% if mensagem.enviada_por.criado_por == user %}text-end{% else %}text-start{% endif %}">
-        <div class="message-bubble">
-            <strong>{{ mensagem.enviada_por }}</strong><br>
-            {{ mensagem.conteudo }}<br>
-            <small>{{ mensagem.enviada_em|date:'d/m/Y H:i:s' }}</small>
+<div>
+    <!-- Header da Conversa -->
+    <div class="conversation-header">
+        <h2><i class="bi bi-chat-left-text"></i> {{ object.titulo }}</h2>
+        <div class="conversation-header-info">
+            <div>
+                <strong>Universo</strong>
+                {{ object.universo.nome }}
+            </div>
+            <div>
+                <strong>Personagens</strong>
+                {{ object.personagens.count }}
+            </div>
         </div>
     </div>
-    {% empty %}
-    <div class="message">
-        <div class="message-bubble bg-light">
-            Nenhuma mensagem nesta conversa.
+
+    <!-- Informações da Conversa -->
+    <div class="info-section">
+        <div class="info-item">
+            <strong><i class="bi bi-people"></i> Participantes:</strong>
+            <div class="participants-tags">
+                {% for personagem in object.personagens.all %}
+                    <span class="participant-badge">{{ personagem.nome }}</span>
+                {% empty %}
+                    <span style="color: #8a8aaa;">Nenhum participante</span>
+                {% endfor %}
+            </div>
         </div>
     </div>
-    {% endfor %}
 
-    <p class="mt-3 text-center">
-        {# Formulário de envio rápido: posta para a view MessageCreate existente (enviar_mensagem)
-           Inclui um campo select para escolher qual personagem do usuário envia a mensagem
-           e um hidden input com o id da conversa. #}
-        <form action="{% url 'enviar_mensagem' %}" method="post">
+    <!-- Chat -->
+    <div class="chat-container">
+        {% if mensagens %}
+            {% for mensagem in mensagens %}
+            <div class="message {% if mensagem.enviada_por.criado_por == user %}sent{% else %}received{% endif %}">
+                <div class="message-wrapper">
+                    <div class="message-avatar">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+                    <div class="message-bubble">
+                        <div class="bubble-header">
+                            <span class="bubble-sender">{{ mensagem.enviada_por.nome }}</span>
+                            <span class="bubble-time">{{ mensagem.enviada_em|date:'d/m/Y H:i' }}</span>
+                        </div>
+                        <p class="bubble-content">{{ mensagem.conteudo }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-messages">
+                <i class="bi bi-chat-dots"></i>
+                <h5 style="color: #b336fb;">Nenhuma mensagem nesta conversa</h5>
+                <p style="font-size: 0.9rem;">Envie sua primeira mensagem para começar!</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Formulário de Envio -->
+    <div class="message-input-section">
+        <form action="{% url 'enviar_mensagem' %}" method="post" class="message-input-form">
             {% csrf_token %}
             <input type="hidden" name="conversa_origem" value="{{ object.pk }}">
 
-            <div class="input-group" style="max-width:900px; margin:0 auto;">
-                <select name="enviada_por" class="form-select" required style="max-width:220px;">
-                    <option value="">Escolha o personagem</option>
-                    {% for p in meus_personagens %}
-                        <option value="{{ p.pk }}">{{ p.nome }}</option>
-                    {% empty %}
-                        <option value="">(Nenhum personagem criado)</option>
-                    {% endfor %}
-                </select>
-                <input type="text" name="conteudo" class="form-control" placeholder="Digite sua mensagem..." required>
-                <button type="submit" class="btn btn-primary">Enviar</button>
-            </div>
-        </form>
-    </p>
+            <select name="enviada_por" class="character-select" required>
+                {% for p in meus_personagens %}
+                    <option value="{{ p.pk }}">{{ p.nome }}</option>
+                {% empty %}
+                    <option value="" disabled>Sem personagem neste universo</option>
+                {% endfor %}
+            </select>
 
+            <input 
+                type="text" 
+                name="conteudo" 
+                class="message-input" 
+                placeholder="Digite sua mensagem..." 
+                required
+                autocomplete="off"
+            >
+
+            <button type="submit" class="send-btn">
+                <i class="bi bi-send"></i> Enviar
+            </button>
+        </form>
+    </div>
+
+    <!-- Navegação -->
+    <div class="navigation-buttons">
+        <a class="back-btn" href="{% url 'listar_conversas' %}">
+            <i class="bi bi-arrow-left"></i> Voltar para Conversas
+        </a>
+    </div>
 </div>
 
-<a class="btn btn-secondary btn-lg mt-3" href="{% url 'listar_conversas' %}">Voltar para lista de conversas</a>
+<script>
+    // Auto-scroll para a última mensagem
+    const chatContainer = document.querySelector('.chat-container');
+    if (chatContainer) {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    // Focus no input de mensagem ao carregar
+    const messageInput = document.querySelector('.message-input');
+    if (messageInput && document.querySelector('.message-input-section')) {
+        messageInput.focus();
+    }
+
+    // Ao submeter o formulário, desabilitar o botão de enviar para evitar múltiplos envios
+    const messageForm = document.querySelector('.message-input-form');
+    if (messageForm) {
+        messageForm.addEventListener('submit', function() {
+            const sendButton = this.querySelector('.send-btn');
+            if (sendButton) {
+                sendButton.disabled = true;
+                sendButton.innerHTML = '<i class="bi bi-hourglass-split"></i> Enviando...';
+            }
+        });
+    }
+</script>
+
 {% endblock conteudo %}

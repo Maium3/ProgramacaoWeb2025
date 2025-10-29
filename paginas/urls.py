@@ -61,7 +61,7 @@ urlpatterns = [
     path('excluir-personagem/<int:pk>/', PersonagemDelete.as_view(), name="deletar_personagem"),
     path('excluir-conversa/<int:pk>/', ConversaDelete.as_view(), name="excluir_conversa"),
     path('excluir-mensagem/<int:pk>/', MensagemDelete.as_view(), name="excluir_mensagem"),
-    path('excluir-contato/', FavoritoDelete.as_view(), name="Desvaforitar"),
+    path('excluir-contato/<int:pk>/', FavoritoDelete.as_view(), name="excluir_contato"),
 
     path('listar/usuarios/', UsuarioList.as_view(), name="listar_usuarios"),
     path('listar/Universos/', UniversoList.as_view(), name="listar_Universos"),

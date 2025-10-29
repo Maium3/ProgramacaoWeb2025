@@ -1,0 +1,45 @@
+{% extends "paginas/index.html" %}
+{% load static %}
+
+{% block conteudo %} 
+<h3>Lista de Universos</h3>
+
+<!-- botão para criar um universo -->
+<a class="btn btn-sm btn-outline-primary mb-3" href="{% url 'cadastro_de_universo' %}">Novo Universo</a>
+
+<div class="table-responsive">
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Descrição</th>
+            <th>Criador</th>
+            <th>Criado em</th>
+            <th>Última atualização</th>
+            <th>Opções</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for universo in object_list %}
+        <tr>
+            <td>{{ universo.nome }}</td>
+            <td>{{ universo.descricao|truncatechars:120 }}</td>
+            <td>{{ universo.criado_por }}</td>
+            <td>{{ universo.data_criacao|date:'d/m/Y H:i' }}</td>
+            <td>{{ universo.ultima_atualizacao|date:'d/m/Y H:i' }}</td>
+            <td>
+                <a class="btn btn-sm btn-primary" href="{% url 'listar_conversas' universo.pk %}">Ver conversas</a>
+                <a class="btn btn-sm btn-dark" href="{% url 'atualizar_universo' universo.pk %}">Editar</a>
+                <a class="btn btn-sm btn-danger" href="{% url 'excluir_universo' universo.pk %}">Excluir</a>
+            </td>
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="6">Nenhum universo encontrado.</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+
+{% endblock conteudo %}

@@ -1,0 +1,35 @@
+{% extends "paginas/index.html" %}
+{% load static %}
+
+{% block conteudo %} 
+<h3>Lista de Conversas</h3>
+
+<!--botão para iniciar uma conversa, com a classe btn-primary outline(botão "vazio" com a cor em volta do botão) -->
+<a class="btn btn-sm btn-outline-primary" href="{% url "iniciar_conversa" %}">Iniciar nova conversa</a>
+
+<div class="row mt-3">
+    {% for conversa in object_list %}
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">{{ conversa.titulo }}</h5>
+                <p class="card-text"><strong>Universo:</strong> {{ conversa.universo }}</p>
+                <!--<p class="card-text"><strong>Personagens:</strong> {{ conversa.personagens.all|join:", " }}</p>-->
+                <a class="btn btn-sm btn-primary" href="{% url "detalhe_conversa" conversa.pk %}">Ver</a>
+                <a class="btn btn-sm btn-dark" href="{% url "atualizar_conversa" conversa.pk %}">Incluir personagem</a>
+                <a class="btn btn-sm btn-danger" href="{% url "excluir_conversa" conversa.pk %}">Excluir</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <p class="card-text">Nenhuma conversa encontrada</p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock conteudo %}

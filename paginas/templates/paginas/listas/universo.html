@@ -2,44 +2,360 @@
 {% load static %}
 
 {% block conteudo %} 
-<h3>Lista de Universos</h3>
+<div class="mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="gradient-title">Universos</h2>
+        <a class="btn btn-primary" href="{% url 'cadastro_de_universo' %}">
+            <i class="bi bi-plus-circle"></i> Novo Universo
+        </a>
+    </div>
 
-<!-- botão para criar um universo -->
-<a class="btn btn-sm btn-outline-primary mb-3" href="{% url 'cadastro_de_universo' %}">Novo Universo</a>
+    {% if object_list %}
+        <div class="universe-list">
+            {% for universo in object_list %}
+            <div class="universe-item">
+                <!-- Área Principal (Clicável) -->
+                <div class="universe-content" onclick="window.location='{% url 'listar_conversas' universo.pk %}'">
+                    <!-- Avatar / Ícone do Universo -->
+                    <div class="universe-avatar">
+                        <i class="bi bi-globe"></i>
+                    </div>
 
-<div class="table-responsive">
-<table class="table table-striped table-hover">
-    <thead>
-        <tr>
-            <th>Nome</th>
-            <th>Descrição</th>
-            <th>Criador</th>
-            <th>Criado em</th>
-            <th>Última atualização</th>
-            <th>Opções</th>
-        </tr>
-    </thead>
-    <tbody>
-    {% for universo in object_list %}
-        <tr>
-            <td>{{ universo.nome }}</td>
-            <td>{{ universo.descricao|truncatechars:120 }}</td>
-            <td>{{ universo.criado_por }}</td>
-            <td>{{ universo.data_criacao|date:'d/m/Y H:i' }}</td>
-            <td>{{ universo.ultima_atualizacao|date:'d/m/Y H:i' }}</td>
-            <td>
-                <a class="btn btn-sm btn-primary" href="{% url 'listar_conversas' universo.pk %}">Ver conversas</a>
-                <a class="btn btn-sm btn-dark" href="{% url 'atualizar_universo' universo.pk %}">Editar</a>
-                <a class="btn btn-sm btn-danger" href="{% url 'excluir_universo' universo.pk %}">Excluir</a>
-            </td>
-        </tr>
-    {% empty %}
-        <tr>
-            <td colspan="6">Nenhum universo encontrado.</td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
+                    <!-- Informações do Universo -->
+                    <div class="universe-info">
+                        <!-- Título e Criador -->
+                        <div class="universe-header">
+                            <h6 class="universe-title">{{ universo.nome }}</h6>
+                            <span class="universe-creator">Por {{ universo.criado_por.username }}</span>
+                        </div>
+
+                        <!-- Descrição Preview -->
+                        <div class="universe-preview">
+                            <span class="preview-text">
+                                {{ universo.descricao|truncatechars:100 }}
+                            </span>
+                        </div>
+
+                        <!-- Datas -->
+                        <div class="universe-dates">
+                            <small class="date-info">
+                                <i class="bi bi-calendar-event"></i>
+                                {{ universo.data_criacao|date:"d/m/Y" }}
+                            </small>
+                            <small class="date-info">
+                                <i class="bi bi-arrow-repeat"></i>
+                                {{ universo.ultima_atualizacao|date:"d/m/Y" }}
+                            </small>
+                        </div>
+                    </div>
+
+                    <!-- Badge com Indicador -->
+                    <div class="universe-meta">
+                        <span class="badge bg-success rounded-pill">
+                            <i class="bi bi-check-circle"></i> Ativo
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Botões de Ação (Não Clicáveis) -->
+                <div class="universe-actions" onclick="event.stopPropagation();">
+                    <a href="{% url 'atualizar_universo' universo.pk %}" class="action-btn" title="Editar Universo">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                    <a href="{% url 'excluir_universo' universo.pk %}" class="action-btn action-delete" title="Excluir Universo">
+                        <i class="bi bi-trash"></i>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">
+                <i class="bi bi-globe"></i>
+            </div>
+            <h4>Nenhum universo criado</h4>
+            <p>Crie um novo universo para começar suas aventuras multiversais</p>
+            <a class="btn btn-primary mt-3" href="{% url 'cadastro_de_universo' %}">
+                <i class="bi bi-plus-circle"></i> Criar Primeiro Universo
+            </a>
+        </div>
+    {% endif %}
 </div>
+
+<!-- CSS Customizado para esta página -->
+<style>
+    .gradient-title {
+        background: linear-gradient(to right, #59079c, #d094f2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: bold;
+        font-size: 2rem;
+    }
+
+    /* Container Principal da Lista */
+    .universe-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        background-color: #1a1d4d;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid rgba(208, 148, 242, 0.2);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Item Individual do Universo */
+    .universe-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        border-bottom: 1px solid rgba(208, 148, 242, 0.1);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        gap: 1rem;
+    }
+
+    .universe-item:last-child {
+        border-bottom: none;
+    }
+
+    .universe-item:hover {
+        background-color: #252957;
+        border-left: 4px solid #d094f2;
+        padding-left: calc(1rem - 4px);
+    }
+
+    /* Conteúdo Principal */
+    .universe-content {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex: 1;
+        min-width: 0;
+        cursor: pointer;
+    }
+
+    /* Avatar */
+    .universe-avatar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 48px;
+        height: 48px;
+        background: linear-gradient(135deg, #59079c 0%, #d094f2 100%);
+        border-radius: 50%;
+        font-size: 1.5rem;
+        color: white;
+        flex-shrink: 0;
+    }
+
+    /* Informações */
+    .universe-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        flex: 1;
+        min-width: 0;
+    }
+
+    /* Header com Título e Criador */
+    .universe-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 1rem;
+    }
+
+    .universe-title {
+        font-weight: 600;
+        color: #d094f2;
+        margin: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 0.95rem;
+    }
+
+    .universe-creator {
+        font-size: 0.75rem;
+        color: #a0a0c0;
+        white-space: nowrap;
+        background-color: rgba(208, 148, 242, 0.1);
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        flex-shrink: 0;
+    }
+
+    /* Preview da Descrição */
+    .universe-preview {
+        display: flex;
+        align-items: center;
+    }
+
+    .preview-text {
+        font-size: 0.85rem;
+        color: #b0b0d0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Datas */
+    .universe-dates {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .date-info {
+        font-size: 0.75rem;
+        color: #8a8aaa;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        white-space: nowrap;
+    }
+
+    /* Meta (Badge) */
+    .universe-meta {
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
+    }
+
+    .universe-meta .badge {
+        background-color: #10b981;
+        color: white;
+        font-weight: 600;
+        font-size: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+
+    /* Botões de Ação */
+    .universe-actions {
+        display: flex;
+        gap: 0.5rem;
+        flex-shrink: 0;
+    }
+
+    .action-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background-color: rgba(208, 148, 242, 0.1);
+        color: #d094f2;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(208, 148, 242, 0.2);
+    }
+
+    .action-btn:hover {
+        background-color: #d094f2;
+        color: #0f1238;
+        transform: scale(1.1);
+    }
+
+    .action-btn.action-delete:hover {
+        background-color: #ff6b6b;
+        border-color: #ff6b6b;
+        color: white;
+    }
+
+    /* Estado Vazio */
+    .empty-state {
+        text-align: center;
+        padding: 3rem 2rem;
+        background-color: #1a1d4d;
+        border-radius: 12px;
+        border: 2px dashed rgba(208, 148, 242, 0.2);
+    }
+
+    .empty-icon {
+        font-size: 3rem;
+        color: #d094f2;
+        margin-bottom: 1rem;
+    }
+
+    .empty-state h4 {
+        color: #d094f2;
+        margin-bottom: 0.5rem;
+    }
+
+    .empty-state p {
+        color: #a0a0c0;
+        margin-bottom: 1rem;
+    }
+
+    /* Responsividade */
+    @media (max-width: 768px) {
+        .universe-item {
+            padding: 0.75rem;
+            gap: 0.75rem;
+        }
+
+        .universe-avatar {
+            min-width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+        }
+
+        .universe-title {
+            font-size: 0.9rem;
+        }
+
+        .universe-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.25rem;
+        }
+
+        .universe-creator {
+            font-size: 0.7rem;
+        }
+
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            font-size: 0.9rem;
+        }
+
+        .preview-text {
+            font-size: 0.8rem;
+        }
+
+        .date-info {
+            font-size: 0.7rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .universe-actions {
+            gap: 0.25rem;
+        }
+
+        .universe-meta .badge {
+            font-size: 0.7rem;
+        }
+
+        .universe-header {
+            width: 100%;
+        }
+
+        .universe-dates {
+            gap: 0.5rem;
+        }
+
+        .gradient-title {
+            font-size: 1.5rem;
+        }
+    }
+</style>
 
 {% endblock conteudo %}

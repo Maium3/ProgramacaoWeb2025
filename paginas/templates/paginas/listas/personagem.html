@@ -12,18 +12,20 @@
 
  <table class="table table-striped table-hover">
     <tr>
-            <th>Nome</th>
-            <th>Habilidades</th>
-            <th>Características</th>
-            <th>História</th>
-            <th>Criado por</th>
-            <th>Opções</th>
+        <th>Universo</th>
+        <th>Nome</th>
+        <th>Habilidades</th>
+        <th>Características</th>
+        <th>História</th>
+        <th>Criado por</th>
+        <th>Opções</th>
     
-        </tr>
+    </tr>
     
     {% for personagem in  object_list %}
     
     <tr>
+        <td>{{ personagem.universo}}</td>
         <td>{{ personagem.nome}}</td>
         <td>{{ personagem.habilidades}}</td>
         <td>{{ personagem.caracteristicas}}</td>
@@ -37,7 +39,7 @@
 
     {% empty %}
     <tr>
-        <td colspan="6">Nenhum personagem encontrado</td>
+        <td colspan="7">Nenhum personagem encontrado</td>
     </tr>
     
     {% endfor %}

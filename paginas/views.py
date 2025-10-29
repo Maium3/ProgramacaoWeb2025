@@ -64,8 +64,11 @@ class ConversaDetailView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         # Busca todas as mensagens relacionadas a esta conversa
         context['mensagens'] = self.object.mensagem_set.all().order_by('enviada_em')
-        # Lista os personagens do usuário logado para permitir selecionar quem envia a mensagem
-        context['meus_personagens'] = Personagem.objects.filter(criado_por=self.request.user)
+        # Filtrar DENTRO DOS PERSONAGENS desta conversa, aqueles que foram criados pelo usuário logado
+        # self.object é a conversa atual
+        # então self.object.personagens é a lista de personagens dessa conversa
+        # Assim, aplico um filtro para pegar apenas os personagens cujo criado_por é o usuário logado
+        context['meus_personagens'] = self.object.personagens.filter(criado_por=self.request.user)
         return context
 
 
@@ -109,7 +112,7 @@ class UniversoCreate(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     
 class PersonagemCreate(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     model = Personagem 
-    fields = ['nome', 'habilidades', 'caracteristicas', 'historia' ]
+    fields = ['universo', 'nome', 'habilidades', 'caracteristicas', 'historia' ]
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('listar_personagens')
     success_message = "Personagem criado com sucesso"
@@ -126,14 +129,26 @@ class PersonagemCreate(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     
 class ConversaCreate(LoginRequiredMixin, CreateView):
     model = Conversa
-    fields = ['titulo', 'personagens', 'universo']
+    fields = ['titulo', 'universo']
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('listar_conversas')
     extra_context = {
         'titulo': "iniciar nova conversa",
         'botao': "Iniciar"
-
     }
+
+    # Definir os personagens disponívels somente aqueles que fazem parte do universo desta conversa
+    # def get_form(self, *args, **kwargs):
+    #     form = super().get_form(*args, **kwargs)
+    #     universo_id = self.request.GET.get('universo_id')
+    #     if universo_id:
+    #         form.fields['universo'].initial = universo_id
+    #         form.fields['universo'].widget.attrs['readonly'] = True
+    #         form.fields['personagens'].queryset = Personagem.objects.filter(universo__id=universo_id)
+    #     else:
+    #         form.fields['personagens'].queryset = Personagem.objects.none()
+    #     return form
+
 
     # def form_valid(self, form):
     #     form.instance.usuarios = self.request.user
@@ -169,10 +184,10 @@ class MensagemCreate(LoginRequiredMixin, CreateView):
     
 
 
-class CombateCreate(GroupRequiredMixin, CreateView):
+class CombateCreate(GroupRequiredMixin, SuccessMessageMixin, CreateView):
     group_required= ["Mestre"]
     model = Combate
-    fields = ['conversa', 'mensagem', 'ganhador', 'perdedor']
+    fields = ['conversa', 'ganhador', 'perdedor']
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('listar_Combates')
     success_message = "Combate iniciado com sucesso"
@@ -180,6 +195,10 @@ class CombateCreate(GroupRequiredMixin, CreateView):
         'titulo': "Iniciar novo combate",
         'botao': "Iniciar"
     }
+
+    def form_valid(self, form):
+        form.instance.mestre_da_mesa = self.request.user
+        return super().form_valid(form)
 
 class FavoritoCreate(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Favoritos
@@ -202,12 +221,12 @@ class FavoritoCreate(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 
 class UsuarioUpdate(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     model = Usuario
-    fields = ['nome', 'data_nasc', 'username', 'email']
+    fields = ['nome', 'data_nasc']
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('Inicio')
     success_message = "Usuário foi atualizado com sucesso"
     extra_context = {
-        'titulo': 'Atualuzar meus dados',
+        'titulo': 'Atualizar meus dados',
         'botao': 'Confirmar'   
     }
 
@@ -255,13 +274,20 @@ class PersonagemUpdate(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
 
 class ConversaUpdate(LoginRequiredMixin, UpdateView):
     model = Conversa
-    fields = ['titulo', 'personagens', 'universo']
+    fields = ['personagens']
     template_name = 'paginas/form.html'
     success_url = reverse_lazy('Inicio')
     extra_context = {
         'titulo': "Modificar conversa",
         'botao': "Modificar"
     }
+
+    # Filtrar no form somente os personagens que fazem parte do mesmo universo
+    def get_form(self, *args, **kwargs):
+        form = super().get_form(*args, **kwargs)
+        universo = self.get_object().universo
+        form.fields['personagens'].queryset = Personagem.objects.filter(universo=universo)
+        return form
 
     def get_object(self, queryset=None):
         obj = get_object_or_404(Conversa, pk=self.kwargs['pk'])

@@ -27,8 +27,8 @@ class Personagem(models.Model):
     habilidades = models.TextField()
     caracteristicas = models.TextField(verbose_name="características", null=True, blank=True) 
     historia = models.TextField(verbose_name="história", null=True, blank=True)
-    
-    
+    criado_por = models.ForeignKey(User, on_delete= models.PROTECT)
+    universo = models.ForeignKey(Universo, on_delete=models.PROTECT, help_text="O Universo não poderá ser alterado após a criação do personagem.")
 
     def __str__(self):
         return  f"{self.nome} ({self.criado_por})"
@@ -55,8 +55,7 @@ class Mensagem(models.Model):
 
 class Combate(models.Model):
     conversa = models.ForeignKey(Conversa, on_delete = models.CASCADE)
-    mensagem = models.ForeignKey(Mensagem, on_delete=models.CASCADE)
-    # criar o atributo mestre_da_mesa que deverá inserir um usuário mestre
+    mestre_da_mesa = models.ForeignKey(User, on_delete=models.PROTECT)
     ganhador = models.ForeignKey(Personagem, on_delete=models.CASCADE, related_name='ganhador')
     perdedor = models.ForeignKey(Personagem, on_delete=models.CASCADE, related_name='perdedor')
 
