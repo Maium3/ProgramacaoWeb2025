@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+{% load static %}
 
 <head>
     <meta charset="UTF-8">
@@ -11,18 +12,26 @@
 <body>
     <div class="container">
         <header>
-             
-            <a href="/" class="voltar" aria-label="Voltar">
-                <span class="chevron">‹</span>     
-            </a>
             <h1 class="titulo">Sobre</h1>
+           
+            <a href="/" class="voltar" aria-label="Voltar">
+                <span class="chevron">‹</span>
+            </a>
+            
 
         </header>
-        <div class="conteudo">
-            <img src="/static/images/logo.png" alt="Arena Multiversal" class="logo">
-             
-      
 
+         <img src="{% static 'imagens/logo.png' %}" class="logo" alt="Logo">
+        <div class="conteudo">
+            
+            <!--fazer a imagem da minha logo aparecer na tela-->
+            <!--ainda não está aparecendo minha logo na pagina sobre-->
+            <!--fazer a imagem de logoaparecer em minha tela ao invés de não carregar-->
+            <!--copilot on?-->
+            <!--copilot off?-->
+            
+            <!--a imagem ainda não apareceu-->
+            <!-- imagem movida para o topo -->
             <p>
                 O software foi desenvolvido por estudantes do Instituto Federal de Educação, Ciência e Tecnologia
                 do Paraná, <b>Larissa Maiume M. Cruz</b> e <b>Richard Ramos</b>. <br>

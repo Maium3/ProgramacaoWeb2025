@@ -1,0 +1,58 @@
+{% extends "paginas/index.html" %}
+{% load static %}
+
+{% block conteudo %}
+<style>
+/* Reutiliza estilo simples para chat */
+.chat-container { background:#f7f7fb; border-radius:8px; padding:1rem; max-height:500px; overflow-y:auto; }
+.message { margin-bottom:0.75rem; }
+.message .meta { font-size:0.85rem; color:#666; }
+.message.me { text-align:right; }
+.message .bubble { display:inline-block; padding:0.6rem 0.9rem; border-radius:10px; background:#e9e9ff; }
+.message.me .bubble { background: linear-gradient(135deg,#b336fb,#8a1fb0); color:#fff; }
+.empty { color:#888; padding:2rem; text-align:center; }
+.form-row { margin-top:1rem; display:flex; gap:0.5rem; }
+.form-row textarea { flex:1; min-height:60px; }
+.send-btn { padding:0.5rem 1rem; background:#6b2bd9; color:#fff; border:none; border-radius:6px; }
+</style>
+
+<div>
+    <h2>
+        Conversa com
+        {% for u in object.participants.all %}
+            {% if u != user %}
+                {{ u.username }}{% if not forloop.last %}, {% endif %}
+            {% endif %}
+        {% empty %}
+            (Sem participantes)
+        {% endfor %}
+    </h2>
+    <p>Iniciada em: {{ object.criado_em|date:'d/m/Y H:i' }}</p>
+
+    <div class="chat-container">
+        {% if mensagens %}
+            {% for m in mensagens %}
+                <div class="message {% if m.enviada_por == user %}me{% endif %}">
+                    <div class="meta">{{ m.enviada_por.username }} · {{ m.enviada_em|date:'d/m/Y H:i' }}</div>
+                    <div class="bubble">{{ m.conteudo|linebreaksbr }}</div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty">Nenhuma mensagem ainda. Envie a primeira mensagem.</div>
+        {% endif %}
+    </div>
+
+    <div class="message-input-section">
+        <form action="{% url 'enviar_mensagem_conversa_usuarios' pk=object.pk %}" method="post">
+            {% csrf_token %}
+            <div class="form-row">
+                <textarea name="conteudo" placeholder="Digite sua mensagem..." required></textarea>
+                <button class="send-btn" type="submit">Enviar</button>
+            </div>
+        </form>
+    </div>
+
+    <p><a href="{% url 'listar_conversas_usuarios' %}">Voltar às conversas</a></p>
+</div>
+
+{% endblock conteudo %}

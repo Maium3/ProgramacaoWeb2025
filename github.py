@@ -1,6 +1,6 @@
 import os
 
-email = "20223020039@estudantes.ifpr.edu.br"
+email = "empiredrahcir@gmail.com"
 
 msg_commit = ""
 while(len(msg_commit)<10):

@@ -22,7 +22,7 @@
         <td>{{ favorito.amigo}}</td>
         <td>
             <a class="btn btn-sm btn-danger" href="{% url "excluir_contato" favorito.pk %}">Excluir</a>
-            <a class="btn btn-sm btn-dark" href="{%url conversa_de_usuarios%}"> Enviar mensagem</a>
+            <a class="btn btn-sm btn-dark" href="{% url 'iniciar_conversa_por_favorito' favorito.pk %}">Iniciar conversa</a>
         </td>
     </tr>
 

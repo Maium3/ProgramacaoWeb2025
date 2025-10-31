@@ -68,3 +68,29 @@ class Favoritos(models.Model):
 
     def __str__(self):
         return  f"{self.proprietario} é amigo de {self.amigo}"
+    
+
+class ConversaUsuarios(models.Model):
+    """Conversa privada entre dois usuários (baseada em Favoritos)."""
+    proprietario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='conversas_usuarios')
+    amigo_username = models.CharField(max_length=150, verbose_name='username do amigo')
+    amigo_codigo_id = models.CharField(max_length=16, verbose_name='codigo_id do amigo')
+    criado_em = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Conversa entre usuários'
+        verbose_name_plural = 'Conversas entre usuários'
+
+    def __str__(self):
+        return f"Conversa: {self.proprietario} <> {self.amigo_username} ({self.amigo_codigo_id})"
+
+
+class MensagemConversaUsuarios(models.Model):
+    conversa = models.ForeignKey(ConversaUsuarios, on_delete=models.CASCADE, related_name='mensagens')
+    enviada_por = models.ForeignKey(User, on_delete=models.PROTECT)
+    conteudo = models.TextField(verbose_name='Conteúdo')
+    enviada_em = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.enviada_por} em {self.enviada_em}: {self.conteudo[:40]}"
+ 
