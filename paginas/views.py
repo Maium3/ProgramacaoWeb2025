@@ -1,6 +1,6 @@
 from django.views.generic import TemplateView, ListView, DetailView
 from django.views.generic.edit import  CreateView, UpdateView, DeleteView
-from .models import Usuario, Universo, Personagem, Conversa, Mensagem, Combate, Favoritos, ConversaUsuarios, MensagemConversaUsuarios
+from .models import Usuario, Universo, Personagem, Conversa, Mensagem, Combate, Favoritos
 
 
 from django.urls import reverse_lazy
@@ -507,85 +507,3 @@ class FavoritoList(ListView):
         qs = super().get_queryset()
         qs = qs.filter(proprietario=self.request.user)
         return qs
-
-
-class ConversaUsuariosList(LoginRequiredMixin, ListView):
-    model = ConversaUsuarios
-    template_name = 'paginas/listas/conversa_usuarios.html'
-
-    def get_queryset(self):
-        qs = super().get_queryset()
-        # listar apenas conversas do proprietário logado
-        return qs.filter(proprietario=self.request.user)
-
-
-class ConversaUsuariosCreate(LoginRequiredMixin, CreateView):
-    """Criar conversa entre dois usuários escolhendo um amigo a partir dos Favoritos do usuário."""
-    model = ConversaUsuarios
-    fields = []
-    template_name = 'paginas/form.html'
-    success_url = reverse_lazy('listar_conversas_usuarios')
-    extra_context = {
-        'titulo': 'Iniciar conversa com usuário',
-        'botao': 'Iniciar'
-    }
-
-    def get_form(self, *args, **kwargs):
-        # Form simples com campo 'amigo' baseado nos Favoritos do usuário
-        favs = Favoritos.objects.filter(proprietario=self.request.user)
-        amigos_qs = User.objects.filter(pk__in=favs.values_list('amigo', flat=True))
-        class _Form(forms.Form):
-            amigo = forms.ModelChoiceField(queryset=amigos_qs, label='Escolha um amigo')
-        # instanciar com POST/GET para validação
-        return _Form(self.request.POST or None)
-
-    def form_valid(self, form):
-        amigo = form.cleaned_data['amigo']
-        # verificar se já existe conversa entre os dois
-        conv = ConversaUsuarios.objects.filter(participants=self.request.user).filter(participants=amigo).first()
-        if not conv:
-            conv = ConversaUsuarios.objects.create(proprietario=self.request.user)
-            conv.participants.add(self.request.user, amigo)
-        self.object = conv
-        return redirect('detalhe_conversa_usuarios', pk=conv.pk)
-
-
-class ConversaUsuariosFromFavorito(LoginRequiredMixin, View):
-    """Criar (ou abrir) conversa diretamente a partir de um favorito (botão na lista de Favoritos)."""
-    def get(self, request, pk):
-        favorito = get_object_or_404(Favoritos, pk=pk, proprietario=request.user)
-        amigo = favorito.amigo
-        conv = ConversaUsuarios.objects.filter(participants=request.user).filter(participants=amigo).first()
-        if not conv:
-            conv = ConversaUsuarios.objects.create(proprietario=request.user)
-            conv.participants.add(request.user, amigo)
-        return redirect('detalhe_conversa_usuarios', pk=conv.pk)
-
-
-class ConversaUsuariosDetailView(LoginRequiredMixin, DetailView):
-    model = ConversaUsuarios
-    template_name = 'paginas/detalhe_conversa_usuarios.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # mensagens da conversa ordenadas
-        context['mensagens'] = self.object.mensagens.all().order_by('enviada_em')
-        return context
-
-
-class MensagemConversaUsuariosCreate(LoginRequiredMixin, CreateView):
-    model = MensagemConversaUsuarios
-    fields = ['conteudo']
-    template_name = 'paginas/form.html'
-
-    def form_valid(self, form):
-        # conversa pk deve vir via kwargs 'pk'
-        conversa_pk = self.kwargs.get('pk')
-        conversa = get_object_or_404(ConversaUsuarios, pk=conversa_pk)
-        form.instance.conversa = conversa
-        form.instance.enviada_por = self.request.user
-        return super().form_valid(form)
-
-    def get_success_url(self):
-        return reverse_lazy('detalhe_conversa_usuarios', kwargs={'pk': self.object.conversa.pk})
-

@@ -7,7 +7,7 @@ from .views import UsuarioUpdate, UniversoUpdate, PersonagemUpdate, ConversaUpda
 from .views import UsuarioDelete, PersonagemDelete, ConversaDelete, MensagemDelete, FavoritoDelete, UniversoDelete
 from .views import UsuarioList, UniversoList, PersonagemList, ConversaList, MensagemList, CombateList, FavoritoList
 from .views import MeusPersonagens, ConversaDetailView, MinhasConversasList, MinhasMensagensList
-from .views import ConversaUsuariosList, ConversaUsuariosDetailView, ConversaUsuariosCreate, MensagemConversaUsuariosCreate, ConversaUsuariosFromFavorito
+
 from django.contrib.auth import views as auth_views
 from .views import CadastroUsuarioView
 
@@ -75,16 +75,9 @@ urlpatterns = [
     path('minhas-conversas/', MinhasConversasList.as_view(), name="minhas_conversas"),
     path('minhas-mensagens/', MinhasMensagensList.as_view(), name="minhas_mensagens"),
 
-  # Conversas privadas entre usuários
-  path('listar/conversa-usuarios/', ConversaUsuariosList.as_view(), name='listar_conversas_usuarios'),
-  path('iniciar-conversa-usuario/', ConversaUsuariosCreate.as_view(), name='iniciar_conversa_usuario'),
-  path('conversa-usuario/<int:pk>/', ConversaUsuariosDetailView.as_view(), name='detalhe_conversa_usuarios'),
-  path('conversa-usuario/<int:pk>/enviar/', MensagemConversaUsuariosCreate.as_view(), name='enviar_mensagem_conversa_usuarios'),
-
     path('conversa/<int:pk>/', ConversaDetailView.as_view(), name="detalhe_conversa"),
 
   # ConversaUsuarios via favorito
-  path('iniciar-conversa-por-favorito/<int:pk>/', ConversaUsuariosFromFavorito.as_view(), name='iniciar_conversa_por_favorito'),
 
     path('listar/meus-personagens/', MeusPersonagens.as_view(), name="listando_personagens")
     
