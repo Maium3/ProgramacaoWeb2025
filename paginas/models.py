@@ -68,4 +68,3 @@ class Favoritos(models.Model):
 
     def __str__(self):
         return  f"{self.proprietario} é amigo de {self.amigo}"
-    

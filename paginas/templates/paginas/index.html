@@ -99,26 +99,28 @@
                 <a class="nav-link" href="{% url 'Inicio' %}">Início</a>
               </li>
               {% if request.user.is_authenticated %}
-                {%if request.user.is_superuser %}
+                
                   <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="listagensDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                       Listagens
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="listagensDropdown">
                       <li><a class="dropdown-item" href="{% url 'listar_Universos' %}">Universos</a></li>
-                      <li><a class="dropdown-item" href="{% url 'listar_conversas' %}">Conversas</a></li>
-                      <li><a class="dropdown-item" href="{% url 'listar_mensagens' %}">Mensagens</a></li>
-                      {% comment %} divider {% endcomment %}
-                      <li><hr class="dropdown-divider"></li>
-                      <li><a class="dropdown-item" href="{% url 'listar_personagens' %}">Personagens</a></li>
-                      <li><a class="dropdown-item" href="{% url 'listar_Combates' %}">Combates</a></li>
-                      <li><hr class="dropdown-divider"></li>
-                      <li><a class="dropdown-item" href="{% url 'listar_contatos' %}">Contatos</a></li>
-                      <li><hr class="dropdown-divider"></li>
                       <li><a class="dropdown-item" href="{% url 'listar_usuarios' %}">Usuários</a></li>
+                      {%if request.user.is_superuser %}
+                        <li><a class="dropdown-item" href="{% url 'listar_conversas' %}">Conversas</a></li>
+                        <li><a class="dropdown-item" href="{% url 'listar_mensagens' %}">Mensagens</a></li>
+                        {% comment %} divider {% endcomment %}
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{% url 'listar_personagens' %}">Personagens</a></li>
+                        <li><a class="dropdown-item" href="{% url 'listar_Combates' %}">Combates</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{% url 'listar_contatos' %}">Contatos</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                      {%endif%}    
                     </ul>
                   </li>
-                {%endif%}  
+                      
                 <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="#" id="meusItensDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     Meus Itens

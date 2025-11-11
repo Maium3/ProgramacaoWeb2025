@@ -21,8 +21,15 @@
         <td>{{ user.data_nasc}}</td>
         <td>{{ user.usuario.username}}</td>
         <td>
-            <a class="btn btn-sm btn-dark" href="{% url "atualizar_usuario" user.pk %}">Editar</a>
-            <a class="btn btn-sm btn-danger" href="{% url "deletar_usuario" user.pk %}">Excluir</a>
+            <!--esses dois botões só irão aparecer se eu for superuser e/ou quando aparecer meu usuario-->
+            {% if request.user == user.usuario %}
+                <a class="btn btn-sm btn-dark" href="{% url "atualizar_usuario" user.pk %}">Editar</a>
+                    {% if request.user.is_superuser or request.user == user.usuario %}
+                        <a class="btn btn-sm btn-danger" href="{% url "deletar_usuario" user.pk %}">Excluir</a>
+                    {% endif %}
+            {% endif %}        
+
+
         </td>
     </tr>
 

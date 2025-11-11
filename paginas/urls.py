@@ -77,7 +77,6 @@ urlpatterns = [
 
     path('conversa/<int:pk>/', ConversaDetailView.as_view(), name="detalhe_conversa"),
 
-  # ConversaUsuarios via favorito
 
     path('listar/meus-personagens/', MeusPersonagens.as_view(), name="listando_personagens")
     
