@@ -117,7 +117,7 @@ class PersonagemCreate(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     model = Personagem 
     fields = ['universo', 'nome', 'habilidades', 'caracteristicas', 'historia' ]
     template_name = 'paginas/form.html'
-    success_url = reverse_lazy('listar_personagens')
+    success_url = reverse_lazy('listando_personagens')
     success_message = "Personagem criado com sucesso"
     extra_context = {
         'titulo': 'Criar Personagem',
@@ -134,7 +134,7 @@ class ConversaCreate(LoginRequiredMixin, CreateView):
     model = Conversa
     fields = ['titulo', 'universo']
     template_name = 'paginas/form.html'
-    success_url = reverse_lazy('listar_conversas')
+    success_url = reverse_lazy('minhas_conversas')
     extra_context = {
         'titulo': "iniciar nova conversa",
         'botao': "Iniciar"
@@ -252,7 +252,7 @@ class UniversoUpdate(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
 
     def get_object(self, queryset=None):
         obj = get_object_or_404(Universo, pk=self.kwargs['pk'])
-        if obj.criado_por != self.request.user and not self.request.user.groups.filter(name='Administrador').exists():
+        if obj.criado_por != self.request.user or not self.request.user.groups.filter(name='Administrador').exists():
             raise Http404("Você não tem permissão para editar este universo.")
         return obj
     
@@ -423,11 +423,7 @@ class UsuarioList(LoginRequiredMixin, ListView):
     # filtrar para mostrar apenas os dados do proprio usuario, exceto para o superuser
     # se for superuser, mostrar todos os usuarios
     #deve mostrar também todos os dados dos usuarios, como nome, data_nasc, email, username, id e senha(password), para o superuser
-    def get_queryset(self):
-        if self.request.user.is_superuser:
-            return Usuario.objects.all()
-        else:
-            return Usuario.objects.filter(usuario=self.request.user)
+    
             
 
 class UniversoList(LoginRequiredMixin, ListView):
