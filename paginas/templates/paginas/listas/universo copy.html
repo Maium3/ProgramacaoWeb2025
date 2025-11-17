@@ -28,7 +28,7 @@
             <td>{{ universo.data_criacao|date:'d/m/Y H:i' }}</td>
             <td>{{ universo.ultima_atualizacao|date:'d/m/Y H:i' }}</td>
             <td>
-                <a class="btn btn-sm btn-primary" href="{% url 'listar_conversas' universo.pk %}">Ver conversas</a>
+                <a class="btn btn-sm btn-primary" href="{% url 'minhas_conversas' universo.pk %}">Ver conversas</a>
                 <a class="btn btn-sm btn-dark" href="{% url 'atualizar_universo' universo.pk %}">Editar</a>
                 <a class="btn btn-sm btn-danger" href="{% url 'excluir_universo' universo.pk %}">Excluir</a>
             </td>
