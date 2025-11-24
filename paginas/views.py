@@ -63,6 +63,15 @@ class ConversaDetailView(LoginRequiredMixin, DetailView):
     model = Conversa
     template_name = 'paginas/detalhe_conversa.html'
 
+    def get_object(self, queryset=None):
+        # Reaproveita o comportamento padrão para obter o objeto
+        obj = super().get_object(queryset=queryset)
+        # Permite acesso somente se o usuário atual possuir ao menos um personagem
+        # presente nesta conversa
+        if not obj.personagens.filter(criado_por=self.request.user).exists():
+            raise Http404("Você não tem permissão para acessar esta conversa.")
+        return obj
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # Busca todas as mensagens relacionadas a esta conversa
